@@ -1,10 +1,12 @@
-# Node.js介绍
+# 基于 Node.js 的服务端开发
 
-## 为什么要学习 Node.js
+## Node.js介绍
+
+### 为什么要学习 Node.js
 
 可以做后端的 Java、PHP、Python、Ruby、.Net等
 
-## Node.js 是什么
+### Node.js 是什么
 
 官网：nodejs.org
 
@@ -17,7 +19,7 @@ JS运行时
 - Node.js 特点
 - npm 是世界上最大的开源库生态系统
 
-## Node.js 能做什么
+### Node.js 能做什么
 
 - Web 服务器后台
 
@@ -36,6 +38,10 @@ node入门
 百度百科，端口号
 
 ![1549153655278](C:\Users\WANGTO~1\AppData\Local\Temp\1549153655278.png)
+
+## 参考
+
+[基于 Node.js 的服务端开发](https://nodejs.lipengzhou.com/)
 
  
 
