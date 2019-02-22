@@ -586,7 +586,7 @@ module.exports = {
 
 我们可以看到每个插件上方都添加了使用 chainWebpack 访问的方式，同时我也添加了每个插件相应的用途注释，需要注意的是要区分 webpack 内置插件和第三方插件的区别，如果是内置插件则无需安装下载，而外部插件大家可以直接访问：[www.npmjs.com/](https://link.juejin.im/?target=https%3A%2F%2Fwww.npmjs.com%2F) 搜索对应的插件，了解其详细的 api 设置。
 
-## 构建基础篇:env 文件与环境设置
+## 第4章 构建基础篇:env 文件与环境设置
 
 
 

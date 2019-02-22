@@ -245,6 +245,10 @@ export default {
 - [Vue 组件通信之 Bus](https://juejin.im/post/5a4353766fb9a044fb080927)
 - [Vuex 通俗版教程](https://juejin.im/entry/58cb4c36b123db00532076a2)
 
+## 组件的通信 1：provide / inject
+
+
+
 
 
 
