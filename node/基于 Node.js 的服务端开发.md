@@ -35,9 +35,7 @@ node入门
 
 ## 端口号
 
-百度百科，端口号
 
-![1549153655278](C:\Users\WANGTO~1\AppData\Local\Temp\1549153655278.png)
 
 ## 参考
 
