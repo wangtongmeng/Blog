@@ -29,3 +29,16 @@ CommonJS
   - AMCSS
   - BEM
 
+### 环境准备
+
+- 命令行工具
+  - mac下
+    - Terminal
+      - iTerm2: http://www.iterm2.com/
+      - Zsh:http://ohmyz.sh/
+      - 知乎：mac下有哪些好用的命令行工具？
+- Node + Npm
+- Webpack
+
+
+
