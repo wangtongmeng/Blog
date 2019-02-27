@@ -93,7 +93,19 @@ Webpack v4.0.0 beta ?
 - Scope Hoisting (作用域提升)
 - Magic Comments (配合动态 import 使用)
 
+#### 版本迁移
 
+V1 -> V2
+
+迁移指南 https://webpack.js.org/guides/migrating/
+
+中文版 https://webpack-china.org/guides/migrating/
+
+V2 - V3
+
+#### 参与社区投票
+
+Vote: https://webpack.js.org/vote/
 
 
 
