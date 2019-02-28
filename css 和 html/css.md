@@ -6,5 +6,9 @@
 
 鸟巢网页背景效果：[canvas-nest](https://github.com/hustcc/canvas-nest.js)
 
+## 效果
+
+雨滴：https://codepen.io/jerrylow/pen/KaPvNa
+
 
 
