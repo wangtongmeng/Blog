@@ -152,7 +152,24 @@ server.listen(3000, function () {
 - EcmaScript
 - 核心模块
 - 第三方模块
-- 用户自定义no快
+- 用户自定义模块
+
+### 核心模块
+
+Node 为 JavaScript 提供了很多服务器级别的 API， 这些 APi 绝大多数被包装到了一个具名的核心模块中了。
+
+如，文件操作的 `fs` 核心模块，http服务构建的 `http`模块，`path`路径操作模块、`os`操作系统信息模块等。
+
+
+
+要使用核心模块，就必须先引入它：
+
+```javascript
+var fs = require('fs')
+var http = require('http')
+```
+
+
 
 ## Node 中的模块系统
 
