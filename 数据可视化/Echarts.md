@@ -14,6 +14,9 @@
 - 显示轨迹
 
   - https://gallery.echartsjs.com/editor.html?c=xg39sNpA55
+  - https://www.echartsjs.com/option.html#series-lines
+  - https://www.echartsjs.com/gallery/editor.html?c=geo-lines
+  - https://gallery.echartsjs.com/editor.html?c=x0-ExSkZDM
 
 
 
