@@ -107,6 +107,77 @@ V2 - V3
 
 Vote: https://webpack.js.org/vote/
 
+### 核心概念
+
+- Entry
+- Output
+- Loaders
+- Plugins
+
+#### Entry
+
+代码的入口
+
+打包的入口
+
+单个或多个
+
+#### Output
+
+打包成的文件（bundle）
+
+一个或多个
+
+自定义规则
+
+#### Loaders
+
+处理文件
+
+转化为模块
+
+##### 常用 Loader
+
+编译相关：babel-loader、ts-loader
+
+样式相关：style-loader、css-loader、less-loader、postcss-loader
+
+文件相关：file-loader、url-loader
+
+#### Plugins
+
+参与打包整个过程
+
+打包优化和压缩
+
+配置编译时的变量
+
+##### 常用 Plugins
+
+优化相关
+
+​	CommonsChunkPlugin
+
+​	UglifyjsaWebpackPlugin
+
+功能相关
+
+​	ExtractTextWebpackPlugin
+
+​	HtmlWebpackPlugin
+
+​	HotModuleReplacementPlugin
+
+​	CopyWebpackPlugin
+
+#### 名词
+
+Chunk
+
+Bundle
+
+Module
+
 
 
 
