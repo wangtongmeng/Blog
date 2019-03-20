@@ -38,7 +38,21 @@ https://reactjs.org/
 
 ### 起步
 
-找好文件夹目录后，运行命令
+1.安装 node 和 npm 后，全局安装 react 脚手架：
+
+```shell
+npm install -g create-react-app
+```
+
+创建并启动项目
+
+```shell
+create-react-app my-app
+cd my-app
+npm start
+```
+
+2.如果 Node >= 6 and npm >= 5.2，可运行命令安装
 
 ```shell
 npx create-react-app my-app
