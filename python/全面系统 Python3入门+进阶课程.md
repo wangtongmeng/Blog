@@ -67,3 +67,70 @@ Python与Python的特点：
 ### 课程维护与提问
 
 代码更新，知乎专栏https://zhuanlan.zhihu.com/oldtimes
+
+## 第2章 Python环境安装
+
+### 下载Python安装包与安装Python
+
+win下载地址：https://www.python.org/downloads/windows/
+
+点击安装 
+
+第一步
+
+- 选择Customize installation，自主安装
+- 同时勾选 Add Python 3.7 to PATH，添加环境变量
+
+第二步，直接选next
+
+第三部，保持默认选项，可以修改安装目录，点击安装
+
+## 第3章 理解什么是写代码与Python的基本类型
+
+### 什么是代码，什么是写代码
+
+代码是现实世界事物在计算机世界中的映射
+
+写代码是将现实世界中的事物用计算机语言来描述
+
+### 数字：整形与浮点型
+
+Number:数字
+
+- 整数、小数
+- 整数、浮点数
+
+整数：int
+
+浮点数：float
+
+其他语言：单精度(float)，双精度(double)，python中不分
+
+其他语言：short，int，long
+
+```python
+type(1)  /# int #/
+type(-1) /# int #/
+type(1*1) /# int #/
+type(2//2) /# int #/ 双斜杠得到 int，原因2//2结果是1
+type(1.1) /# float #/
+type(1+0.1) /# float #/
+type(1+1.0) /# float #/
+type(1*1.0) /# float #/
+type(2/2) /# float #/ 单斜杠得到 float，原因2/2结果是1.0
+```
+
+/和//的区别
+
+1/2 0.5
+
+1//2 0
+
+单斜杠是除法保留小数点，双斜杠是整除只保留整数部分
+
+### 10、2、8、16进制
+
+### 各进制的表示与转换
+
+21：01
+
