@@ -96,3 +96,13 @@ p标签
 
 .text-capitalize
 
+### Bootstrap中的排版 ——表格
+
+- 带边框表格 .table-bordered
+- 条纹状表格 .table-striped
+- 悬停变色 .table-hover
+- 紧凑风格 .table-condensed
+
+### Bootstrap中的表单
+
+Bootstrap给HTML大部分表单都设置了默认样式，我们可以给表单添加相应类名，以实现表单的水平排列，个性化定制等。
