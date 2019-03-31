@@ -79,6 +79,118 @@ p：0.5 行高的 margin-bottom
 - 着重，`<strong>内容</strong>`
 - 斜体，`<em>内容</em>`
 
+### 对齐
+
+- 左对齐，`.text-left`
+- 居中，`.text-center`
+- 右对齐，`.text-right`
+- 自适应，`.text-justify`
+- 不换行，`.text-nowrap`
+
+### 改变大小写
+
+- 小写，`.text-lowercase`
+- 大写，`.text-uppercase`
+- 首字母大写，`.text-capitalize`
+
+### 缩略语
+
+```html
+<abbr title="attribute">attr</abbr>
+首字母缩略语 .initialism 字体90%，大写
+<abbr title="HyperText Markup Language" class="initialism">HTML</abbr>
+```
+
+### 地址
+
+`<address>地址内容</address>`
+
+### 引用
+
+`<blockquote>`与`<p>`构成基础引用，`<footer>`标明引用来源，来源名称包裹进`<cite>`，右对齐`<blockquote class="blockquote-reverse">`
+
+### 列表
+
+- 无序列表，`<ul><li></li></ul>`
+- 有序列表，`<ol><li></li></ol>`
+- 无样式列表，`<ul class="list-unstyled"></ul>`
+- 内联列表，`<ul class="list-inline"></ul>`
+- 描述，`<dl><dt></dt><dd></dd></dl>`
+- 水平排列的描述，`<dl class="dl-horiZontal"></dl>`
+
+## 代码
+
+- 内联代码，`<code>content</code>`
+- 用户输入，`<kbd>content</kbd>`
+- 代码块，`<pre>code</pre>`，注意将尖括号做转义处理,使用 `.pre-scrollable` 类设置 max-height 为 350px ，并在垂直方向展示滚动条。s
+- 变量，`<var>x</var>`
+- 程序输出，`<samp></samp>`
+
+## 表格
+
+- 基础实例，`<table class="table"></table>`
+- 条纹状表格，`<table class="table table-striped">`，不支持ie8
+- 带边框，`<table class="table table-bordered">`
+- 悬停，`<table class="table table-hover">`
+- 紧凑，`<table class="table table-condensed">`
+- 状态类，`<tr class="active"> or <td class="active">`active、success、warining、danger、info
+- 响应式表格`<div class="table-responsive"><table class="table"></table></div>`
+
+## 表单
+
+### 基础表单
+
+全局样式
+
+.form-control
+
+.form-group
+
+### 内联表单
+
+### 横向表单
+
+在 form上应用.form-horizontal
+
+使用栅格系统
+
+### 表单控件
+
+input
+
+select
+
+textarea
+
+checkbox&radio
+
+静态控件
+
+### 控制状态
+
+焦点状态
+
+禁用状态
+
+被禁用的 fieldset
+
+只读状态
+
+校验状态
+
+### 添加额外的图标
+
+### 控件大小
+
+### 辅助文本
+
+
+
+
+
+
+
+
 
 
 
