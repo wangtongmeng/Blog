@@ -381,3 +381,130 @@ b.saysomething()
 - jQuery 是一个 class
 - $('p') 是 jQuery 的一个实例
 
+```js
+class jQuery {
+  constructor (selector) {
+    let slice = Array.prototype.slice
+    let dom = slice.call(document.querySelectorAll(selector))
+    let len = dom ? dom.length: 0
+    for (let i = 0; i < len; i++) {
+      this[i] = dom[i]
+    }
+    this.length = len
+    this.selector = selector || ''
+  }
+  append (node) {
+
+  }
+  addClass (name) {
+
+  }
+  html (data) {
+
+  }
+  // 此处省略 N 个 API
+}
+
+window.$ = function (selector) {
+  return new jQuery(selector)
+}
+// 由于加载顺序的问题，暂时写在一个文件中
+let $p = $('p')
+console.log($p)
+console.log($p.addClass)
+```
+
+**为何使用面向对象？**
+
+- 程序执行：顺序、判断、循环——结构化
+- 面向对象——数据结构化
+- 对于计算机，结构化才是最简单的
+- 编程应该 简单 & 抽象
+
+### UML 类图
+
+- Unified Modeling Language 统一建模语言
+- 类图，UML 包含很多种图，和本课相关的是类图
+- 关系，主要讲解泛化和关联
+
+**画图工具**
+
+- MS Office visio
+- https://www.processon.com/
+
+**类图**
+
+![uml类图](./img/uml类图.png)
+
+```js
+// 类，即模板
+class People {
+  constructor(name, age) {
+    this.name = name
+    this.age = age
+  }
+  eat() {
+    alert(`${this.name}, eat sth`)
+  }
+  speak() {
+    alert(`My name is ${this.name}, age ${this.age}`)
+  }
+}
+```
+
+![people-uml类图](./img/people-uml类图.png)
+
+ **关系**
+
+- 泛化，表示继承
+- 关联，表示引用
+
+```js
+class People {
+  constructor (name, house) {
+    this.name = name
+    this.house = house
+  }
+  saySomething () {
+    
+  }
+}
+class A extends People {
+  constructor (name, house) {
+    super(name, house)
+  }
+  saySomethin () {
+    alert('I am A')
+  }
+}
+class B extends People {
+  constructor (name, house) {
+    super(name, house)
+  }
+  saySomething () {
+    alert('I am B')
+  }
+}
+class House {
+  constructor (city) {
+    this.city = city
+  }
+  showCity () {
+    alert(`house in ${this.city}`)
+  }
+}
+let aHouse = new House('beijing')
+let a = new A('a', aHouse)
+let b = new B('b')
+b.saySomething()
+```
+
+A 和 B 继承了 People，用空心箭头表示；People 引用了 House，用实心箭头表示。
+
+![uml类图-关系](./img/uml类图-关系.png)
+
+### 总结
+
+- 搭建开发环境： npm init、webpack、babel
+- 面向对象：概念、三要素、应用举例、意义
+- UML类图：类图、关系、示例
