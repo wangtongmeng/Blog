@@ -132,5 +132,70 @@ type(2/2) /# float #/ 单斜杠得到 float，原因2/2结果是1.0
 
 ### 各进制的表示与转换
 
-21：01
+**各进制的表示**
+
+二进制表示， 0b10,  0b11
+
+八进制表示，0o10,  0o11
+
+十六进制表示，0x10, 0x1F
+
+十进制表示，11
+
+**进制转换**
+
+转为二进制，bin()
+
+转为八进制，oct()
+
+转为十进制，int()
+
+转为十六进制，hex()
+
+###  数字：布尔类型与复数
+
+数字包括
+
+- Number: 数字
+- bool 布尔类型：表示真假
+- complex 复数
+
+```python
+type(False) /# <class 'bool'> #/ 
+type(True) /# <class 'bool'> #/ 
+/# False #/ 
+bool(0)
+bool(0b0)
+bool('')
+bool([])
+bool({})
+bool(None)
+```
+
+复数
+
+通过j表示，36j
+
+### 字符串：单引号与双引号
+
+str 字符串
+
+如何表示字符串
+
+单引号，双引号，三引号
+
+```python
+/# 表示方法 #/ 
+'hello world'
+"hello world"
+"let's go"
+'let"s go'
+'let\'s go' /# 转义字符 #/
+/# 数字和字符串类型区分 #/
+type(1) /# <class 'int'> #/
+type('1') /# <class 'str'> #/
+
+```
+
+**视频时间位置46：30**
 
