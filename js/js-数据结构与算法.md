@@ -1,0 +1,34 @@
+# js 数据结构与算法
+
+## 环境搭建
+
+前置知识： ES6、Jest、NPM、Git
+
+- Jest: <https://jestjs.io/docs/zh-Hans/getting-started>
+- Git: <https://github.com/cucygh/fe-material>
+
+环境搭建
+
+- 直接使用现成项目，从0搭建，参考环境安装.md
+
+- 检验否是搭建成功： npm test，显示测试成功，证明环境搭建成功
+
+## 字符串
+
+- 反转字符串中的单词
+- 计数二进制子串
+
+### 反转字符串中的单词
+
+创建目录
+
+```shell
+mkdir -p code/string  /# -p 是目录下创建 #/
+```
+
+
+
+### 计数二进制子串
+
+
+
