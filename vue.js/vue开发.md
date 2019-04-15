@@ -21,3 +21,14 @@
 有些像 Sass 之类的预处理器无法正确解析 `>>>`。这种情况下你可以使用 `/deep/` 操作符取而代之——这是一个 `>>>` 的别名，同样可以正常工作。
 
 参考：https://vue-loader-v14.vuejs.org/zh-cn/features/scoped-css.html
+
+## 实现全局 loading
+
+### 封装 axios 调用 api 自动全局 loading、错误提示
+
+https://juejin.im/post/5bfb63e86fb9a049c30ae96d
+
+### 通过 plugin
+
+### 通过组件
+
