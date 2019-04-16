@@ -526,3 +526,115 @@ this.$router.push({
 
 ## 路由进阶篇
 
+- 路由组件传参
+- HTML5 History 模式
+- 导航守卫
+- 路由元信息
+- 过渡效果
+
+### 路由组件传参
+
+通过 `$route`接收参数，使页面组件和路由高度耦合。可以通过路由组件传参来解决，路由组件传参有 3 种模式。
+
+**1.布尔模式**
+
+路由列表中设置路由 props 为 true
+
+```js
+// router.js
+[
+    {
+		path: '/argu/:name',
+		name: 'argu',
+		component: () => import('@/views/argu.vue'),
+		props: true
+	}
+]
+```
+
+组件内通过 props 接收参数
+
+```html
+<--组件-->
+<template>
+	<div>{{ name }}</div>
+</template>
+<script>
+export default {
+	props: {
+		name: {
+			type:String,
+			default: 'lison'
+		}
+	}
+}
+</script>
+```
+
+**2.对象模式**
+
+路由列表中设置路由 props 为一个对象，不同路由可以设置传入不同参数
+
+```js
+// router.js
+[
+    {
+		path: '/about',
+		name: 'about',
+		component: () => import('@/views/About.vue'),
+		props: {
+			food: 'banana'
+		}
+	}
+]
+```
+
+组件内通过 props 接收参数，同上
+
+**3.函数模式**
+
+路由列表中设置路由 props 为一个函数，通过函数参数 route对象拿到参数值
+
+```js
+// router.js
+[
+    {
+		path: '/',
+		alias: '/home_page',
+		name: 'home',
+		component: Home,
+		props: route => ({
+			food: route.query.food
+		})
+	}
+]
+```
+
+组件内通过 props 接收参数，同上
+
+### HTML5 History 模式
+
+router 构造函数除了传入路由列表还可以传入 mode 选项
+
+history 模式是利用浏览器 history api 做页面无刷新跳转。但需要后端配合。
+
+当 url 匹配不到静态资源时，默认显示 index.html
+
+当 url 匹配不到静态资源并且前端路由也匹配不到组件的话，就会有问题，所以需要统一显示404页面。
+
+**在路由列表的末尾添加404页面路由**
+
+注意一定要在末尾，因为路由优先级前面的高。`path: '*'`表示匹配任意路由，当前面路由都匹配不到时，匹配404页面。
+
+```js
+// router.js 
+[
+    {
+		path: '*',
+		component: () => import('@/views/error_404.vue')
+	}
+]
+```
+
+### 导航守卫
+
