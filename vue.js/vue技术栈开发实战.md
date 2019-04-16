@@ -282,7 +282,7 @@ module.exports = {
   {
 		path: '/argu/:name',
 		component: () => import('@/views/argu.vue')
-	}
+  }
 ]
 ```
 **页面组件处理不同逻辑**
@@ -356,6 +356,173 @@ module.exports = {
 <router-link to="/">Home</router-link> |
 <router-link to="/about">About</router-link>
 <--使用命名路由时-->
-  
+<router-link :to="{ name: 'home' }">Home</router-link> |
+<router-link :to="{ name: 'about' }">About</router-link>
 ```
+
+### 命名视图
+
+在一个页面显示多个视图(由`<router-view>`渲染出来的视图)。
+
+**在页面组件中添加多个带名字的`<router-view>`**
+
+```html
+<-- 页面组件 -->
+<template>
+  <div id="app">
+    <router-view />
+      <router-view />
+      <router-view name='email' />
+      <router-view name='tel' />
+  </div>
+</template>
+```
+
+**路由列表中配置具有多个命名视图的路由**
+
+```js
+// router.js
+[
+    {
+		path: '/named_view',
+		components: {
+			default: () => import('@/views/child.vue'),
+			email: () => import('@/views/email.vue'),
+			tel: () => import('@/views/tel.vue')
+		}
+	}
+]
+```
+
+
+> 注意，components 需要加 s。
+
+### 重定向
+
+**路由列表中通过 redirect 重定向**
+
+当访问 /main 路由时，重定向到首页。
+
+```js
+// router.js
+// 1. 给 redirect 传入一个字符串路由
+[
+    {
+		path: '/main',
+		redirect: '/'
+	}
+]
+// 2. 给 redirect 传入一个对象，通过 name 来重定向到响应名字的路由
+[
+    {
+        {
+		path: '/main',
+		redirect: {
+			name: 'home'
+		}
+	}
+    }
+]
+// 3. 给 redirect 传入一个函数，根据 to对象 中的参数，灵活的重定向
+[
+    {
+		path: '/main',
+		redirect: to => { name: 'home' }
+	}
+]
+```
+
+### 别名
+
+当访问路由别名时，就相当于访问这个路由。
+
+**路由列表中通过 alias 给路由设置别名**
+
+当我们访问 /home_page 时，显示的也是 home 页面。
+
+```js
+// router.js
+[
+    {
+		path: '/',
+		alias: '/home_page',
+		name: 'home',
+		component: Home
+	},
+]
+```
+
+### 编程式导航
+
+通过 JS 来控制路由的跳转和返回。
+
+通过 `$router` 实施路由跳转，`$router` 是在 new Vue({ router }) 注册的。
+
+**回退 1**
+
+`this.$router.go(-1)`
+
+`this.$router.back()`
+
+**向前 1**
+
+`this.$router.go(1)`
+
+**跳转指定路由**
+
+`this.$router.push('/parent')`，push 传入路由字符串
+
+`this.$router.push({ name: 'parent'})`，通过命名路由跳转
+
+**替换到指定路由**
+
+`this.$router.push({ name: 'parent'})`
+
+**replace 和 push 的区别**
+
+- push 跳转路由，会添加到路由跳转记录中。
+- replace 是替换路由，也就是把当前路由的跳转记录替换掉。
+
+**跳转路由传参的 3 种写法**
+
+1.name 和 query 
+
+查询参数传参，跳转后`http://localhost:8080/#/parent?name=lison`
+
+```js
+this.$router.push({
+    name: 'parent',
+    query: {
+        name: 'lison'
+    }
+})
+```
+
+2.name 和 params
+
+动态路由传参，跳转后 `http://localhost:8080/#/argu/lison`
+
+```js
+this.$router.push({
+    name: 'argu',
+    params: {
+        name: 'lison'
+    }
+})
+```
+
+3.path
+
+动态路由传参，结合模板字符串的写法，跳转后 `http://localhost:8080/#/argu/lison`
+
+```js
+const name = 'lison'
+this.$router.push({
+    path: `/argu/${name}`
+})
+```
+
+> 注意，path 不能喝 params一起使用，无效。
+
+## 路由进阶篇
 
