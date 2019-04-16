@@ -273,3 +273,89 @@ module.exports = {
 ### 动态路由
 
 优点：组件复用、在同一组件处理不同逻辑
+
+**路由列表中定义动态路由**
+
+```js
+// router.js
+[
+  {
+		path: '/argu/:name',
+		component: () => import('@/views/argu.vue')
+	}
+]
+```
+**页面组件处理不同逻辑**
+
+当访问 /argu/动态值 时，可以根据路由参数的不同，处理不同的逻辑；相当于用同一个组件显示不同路由下的页面，实现了组件复用。
+
+```html
+<--页面组件-->
+<template>
+	<div>
+		{{ $route.params.name }}
+	</div>
+</template>
+```
+
+### 嵌套路由
+
+**路由列表中定义动态路由**
+
+```js
+// router.js
+[
+  {
+		path: '/parent',
+		component: () => import('@/views/parent.vue'),
+		children: [
+			{
+				path: 'child',
+				component: () => import('@/views/child.vue')
+			}
+		]
+	}
+]
+```
+
+**父级组件中使用 `<router-view />`**
+
+```html
+<template>
+	<div>
+		parent
+		<router-view /> <--子组件在此显示-->
+	</div>
+</template>
+<script>
+```
+
+当访问路径 /parent/child 时，就会显示 parent.vue 和 child.vue 结合的内容了。
+
+### 命名路由
+
+**路由列表中给路由项添加 name 属性**
+
+```js
+[{
+		path: '/',
+		name: 'home',
+		component: Home
+	},
+	{
+		path: '/about',
+		name: 'about',
+		component: () => import(/* webpackChunkName: "about" */ '@/views/About.vue')
+	}]
+```
+
+**`<router-link>的 to 属性中使用 name 属性跳转`**
+
+```html
+<--正常情况-->
+<router-link to="/">Home</router-link> |
+<router-link to="/about">About</router-link>
+<--使用命名路由时-->
+  
+```
+
