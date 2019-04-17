@@ -32,3 +32,8 @@ https://juejin.im/post/5bfb63e86fb9a049c30ae96d
 
 ### 通过组件
 
+## 使用 echarts
+
+x 轴 为 time 时，https://www.cnblogs.com/vipstone/p/5318615.html
+
+[时间为横坐标的柱状图超出x坐标了](https://github.com/apache/incubator-echarts/issues/5651)
