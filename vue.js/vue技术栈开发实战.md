@@ -1,4 +1,4 @@
-# vue 技术栈开发实战
+#  vue 技术栈开发实战
 
 课程源码：https://github.com/lison16/vue-cource
 
@@ -638,3 +638,72 @@ history 模式是利用浏览器 history api 做页面无刷新跳转。但需�
 
 ### 导航守卫
 
+路由发生跳转到导航结束期间，做一些相应的逻辑处理；如跳转到某个页面时，判断用户是否登录，若没登录就跳转到登录页面；如权限控制，若页面用户没有权限，做一些相应的处理。
+
+**全局守卫**
+
+在 router 实例上进行全局守卫设置
+
+1.全局前置守卫
+
+通过全局前置守卫`beforeEach`处理用户是否登录。逻辑如下：
+
+- 若跳转页面不是登录页
+  - 已登录就跳转
+  - 否则跳转到登录页
+- 若跳转页面时登录页
+  - 已登录就跳转到首页
+  - 否则跳转到登录页
+
+```js
+const HAS_LOGINED = true
+// to from 都是路由对象，to 跳转后页面的路由对象，from，跳转前的路由对象，next 函数控制页面跳转。
+router.beforeEach((to, from, next) => {
+	if (to.name !== 'login') {
+		if (HAS_LOGINED) next()
+		else next({ name: 'login'})
+	} else {
+		if (HAS_LOGINED) next({ name: 'home'})
+		else next()
+	}
+})
+```
+
+2.全局后置钩子
+
+也为页面已发生跳转，所以不能叫守卫。
+
+可以用来关闭 login 动画。
+
+```js
+router.afterEach((to, from) => {
+	// logining = false
+})
+```
+
+3.全局解析守卫
+
+`router.beforeResolve` 注册一个全局守卫。这和 `router.beforeEach` 类似，区别是在导航被确认之前，**同时在所有组件内守卫和异步路由组件被解析之后**，解析守卫就被调用。
+
+```js
+// router.beforeResolve
+```
+
+4.路由独享的守卫
+
+在路由配置上直接定义 `beforeEnter` 守卫：
+
+```js
+const router = new VueRouter({
+  routes: [
+    {
+      path: '/foo',
+      component: Foo,
+      beforeEnter: (to, from, next) => {
+        // ...
+        next() // 注意，一定要调用 next 不然无法跳转
+      }
+    }
+  ]
+})
+```
