@@ -707,3 +707,156 @@ const router = new VueRouter({
   ]
 })
 ```
+
+5.组件内的守卫
+
+- `beforeRouteEnter`
+- `beforeRouteUpdate`
+- `beforeRouteLeave`
+
+```js
+// 页面路由组件中
+beforeRouteEnter (to, from, next) {
+    // this，虽然进入了组件内钩子，但此时页面还没有渲染，所以没有 this
+    next(vm => {
+        // 如果要使用组件实例，可以在 next 中使用
+        // console.log(vm)
+    })
+},
+beforeRouteLeave (to, from, next) {
+    // 例如，用户一个页面编辑，突然点击跳转页面，这时需要提醒用户还未保存编辑
+    // 组件已经渲染好了，可以使用 this
+    const leave = confirm('您确认要离开吗？')
+    if (leave) next()
+    else next(false)
+},
+beforeRouteUpdate (to, from ,next) {
+    // 路由发生变化，组件被复用时调用
+    // 由于组件已经渲染过了，所以可以使用 this
+    console.log(to.name, from.name)
+},
+```
+
+6.完整的导航流程
+
+1. 导航被触发
+2. 在失活的组件 (即将离开的页面组件) 里调用离开守卫 beforeRouteLeave
+3. 调用全局的前置守卫 beforeEach
+4. 在重用的组件里调用 beforeRouteUpdate
+5. 调用路由独享的守卫 beforeEnter
+6. 解析异步路由组件
+7. 在被激活的组件 (即将进入的页面组件) 里调用 beforeRouteEnter
+8. 调用全局的解析守卫 beforeResolve
+9. 导航被确认
+10. 调用全局的后置守卫 afterEach
+11. 触发 DOM 更新
+12. 用创建好的实例调用 beforeRouterEnter 守卫里传给 next 的回调函数
+
+### 路由元信息
+
+在路由列表中，每个路由对象可以配置一个 meta 字段，存放自定义的信息。
+
+例如页面权限，之后在路由前置路由中做处理。
+
+demo: 动态设置路由页面的 title 值
+
+```js
+// 1. 在路由列表的路由对象中，配置 meta 字段，添加 title 值
+//  router.js
+[
+    {
+		path: '/about',
+		name: 'about',
+		component: () => import('@/views/About.vue'),
+		meta: {
+			title: '关于'
+		}
+	},
+]
+// 2. 在全局前置守卫处理
+//  /router/index.js
+import { setTitle } from '@/lib/util'
+router.beforeEach((to, from, next) => {
+	to.meta && setTitle(to.meta.title)
+})
+
+//  util.js 和业务有关的工具函数
+export const setTitle = (title) => {
+	window.document.title = title || 'admin'
+}
+```
+
+### 路由切换动效
+
+包住多个组件用 `<transition-group>`，单个组件用`<transition>`
+
+为  `<transition-group>` 中的每一个组件设置一个 key，给`<transition-group>`设置一个 name，通过类名的方式设置，路由切换时，组件的隐藏和显示。
+
+```html
+<-- App.vue 根组件中 --> 
+<template>
+  <div id="app">
+      <transition-group name='router'>
+          <router-view key='default' />
+          <router-view key='email' name='email' />
+          <router-view key='tel' name='tel' />
+      </transition-group>
+  </div>
+</template>
+
+<style lang="less">
+// 页面进入
+//   进入路由前
+.router-enter {
+	opacity: 0;
+}
+//   路由页面从无到有的过程
+.router-enter-active {
+	transition: opacity 1s ease;
+}
+//   路由页面完全显示时
+.router-enter-to {
+	opacity: 1;
+}
+// 页面注销/离开
+//   离开路由前
+.router-leave {
+	opacity: 1;
+}
+//   路由页面从有到无的过程
+.router-leave-active {
+	transition: opacity 1s ease;
+}
+//   路由页面完全消失时
+.router-leave-to {
+	opacity: 0;
+}
+</style>
+
+```
+
+若为某个页面设置特定的路由切换过渡效果，可以动态设置`<transtion-group>`的 name 属性。我们可以在访问特定路由时传递一个参数，比如通过 query 传一个参数，通过监听 `$route` 变化拿到参数，并根据参数设置特定路由页面的过渡效果。当路由切换携带对应参数时`http://localhost:8080/#/about?transitionName=router`，页面就可以显示指定过渡效果了。
+
+```html
+<template>
+  <div id="app">
+		<transition-group :name='routerTransition'>
+		</transition-group>
+  </div>
+</template>
+<script>
+export default {
+	data () {
+		return {
+			routerTransition: ''
+		}
+	},
+	watch: {
+		'$route' (to) {
+			to.query && to.query.transitionName && (this.routerTransition = to.query.transitionName)
+		}
+	}
+}
+</script>
+```
+
