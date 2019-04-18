@@ -860,3 +860,10 @@ export default {
 </script>
 ```
 
+## 状态管理 bus 的使用
+
+- Bus
+- Vuex-基础-state&getter
+- Vuex-基础-mutation&action/module
+- Vuex-进阶
+
