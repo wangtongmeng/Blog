@@ -37,3 +37,21 @@ https://juejin.im/post/5bfb63e86fb9a049c30ae96d
 x 轴 为 time 时，https://www.cnblogs.com/vipstone/p/5318615.html
 
 [时间为横坐标的柱状图超出x坐标了](https://github.com/apache/incubator-echarts/issues/5651)
+
+## mock数据
+
+[你是如何构建 Web 前端 Mock Server 的？](https://www.zhihu.com/question/35436669)
+
+## vue 使用 echarts 遇到的问题
+
+### ehart 切换显示宽度不正确
+
+ nextick 解决
+
+- [Vue解决echart在element的tab切换时显示不正确](https://blog.csdn.net/SanJiK/article/details/79764429)
+
+- [Vue.nextTick 的原理和用途](https://segmentfault.com/a/1190000012861862)
+- https://juejin.im/post/5a6fdb846fb9a01cc0268618
+
+
+
