@@ -867,3 +867,4 @@ export default {
 - Vuex-基础-mutation&action/module
 - Vuex-进阶
 
+自己封装的组件最好有一个统一的前缀
