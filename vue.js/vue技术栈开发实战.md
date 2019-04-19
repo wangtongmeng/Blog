@@ -860,11 +860,248 @@ export default {
 </script>
 ```
 
-## 状态管理 bus 的使用
-
-- Bus
-- Vuex-基础-state&getter
-- Vuex-基础-mutation&action/module
-- Vuex-进阶
+## 状态管理-bus 的使用
 
 自己封装的组件最好有一个统一的前缀
+
+**创建 bus**
+
+new 一个 Vue 实例 作为 bus
+
+```js
+// bus.js
+import Vue from 'vue'
+const Bus = new Vue()
+export default Bus
+```
+
+**将 bus 挂载到 Vue.prototype 上**
+
+将 bus 实例挂在到 Vue.prototype 上，方便在各组件中调用
+
+```js
+// main.js
+import Bus from './lib/bus'
+
+Vue.prototype.$bus = Bus
+
+new Vue({
+  //
+}).$mount('#app')
+```
+
+**在兄弟组件中使用 bus 通信**
+
+在 email.vue 组件中，通过 `this.$bus.$emit()`出发自定义事件，并携带数据。
+
+```html
+<-- email.vue --> 
+<template>
+	<div class="email">
+		<button @click="handleClick">按我</button>
+	</div>
+</template>
+<script>
+export default {
+	methods: {
+		handleClick () {
+			this.$bus.$emit('on-click', 'hello')
+		}
+	}
+}
+</script>
+```
+
+在兄弟组件 tel.vue 中，通过 `this.$bus.$on`监听事件，获取传入的数据。
+
+```html
+<-- tel.vue -->
+<template>
+  <div class="tel">
+		<p>{{message}}</p>
+  </div>
+</template>
+<script>
+export default {
+	data () {
+		return {
+			message: ''
+		}
+	},
+	mounted () {
+		this.$bus.$on('on-click', mes => {
+			this.message = mes
+		})
+	}
+}
+</script>
+```
+
+## 状态管理-Vuex-基础
+
+使用 vuex 的状态流程
+
+![vuex](https://vuex.vuejs.org/vuex.png)
+
+### state
+
+**定义根级别 state 数据**
+
+```js
+// state.js
+const state = {
+	appName: 'admin'
+}
+export default state
+```
+
+**在组件 computed 中获取 state 数据**
+
+1.通过`this.$store.state`获取状态
+
+```html
+<-- store.vue -->
+<template>
+	<div>
+		<p>appName: {{ appName }}</p>
+	</div>
+</template>
+<script>
+    export default {
+       data () {
+		return {
+			inputValue: ''
+		}
+        },
+        computed: {
+            appName () {
+                return this.$store.state.appName
+            }    
+        } 
+    }
+    
+</script>
+```
+
+如果是模块中的 state，需要在 state 后面加上模块名
+
+```js
+// 获取 user 模块中的状态
+computed: {
+    appName () {
+    	return this.$store.state.user.userName
+    }
+}
+```
+
+2. 通过 `mapState`方法获取状态
+
+2.1 获取根级别 state，mapState传入数组
+
+...在这里用作展开操作符，展开一个对象，mapState 会返回一个对象，对象中包含属性，... 将对象中的属性扁平化处理。
+
+```js
+import { mapState } from 'vuex'
+<script>
+    export default {
+        computed: {
+						...mapState(['appName'])
+        }
+	}
+</script>
+```
+
+2.2 获取根级别 state，mapState传入对象
+
+```js
+import { mapState } from 'vuex'	
+<script>
+  export default {
+    computed: {
+      ...mapState({
+        appName: state => state.appName
+      })
+    }
+	}
+</script>
+```
+
+2.3 获取模块中的 state，mapState 传入数组
+
+```js
+computed: {
+  ...mapState(['appName'])
+}
+```
+
+2.3 获取模块中的 state，mpaState 只传入对象
+
+```js
+import { mapState } from 'vuex'	
+<script>
+  export default {
+    computed: {
+      ...mapState({
+        userName: state => state.user.userName // 导入模块的状态
+      })
+    }
+	}
+</script>
+```
+
+2.4 获取模块中的 state，设置命名空间后，mapState 结合 createNamespacedHelpers 
+
+给 user 模块设置命名空间
+
+```js
+// user.js
+export default {
+	// 模块使用命名空间，会让模块更加密闭，不会收到污染
+	namespaced: true,
+	state,
+	getters,
+	mutations,
+	actions
+}
+```
+
+获取 user 模块的 state 数据。
+
+通过给 createNamespacedHelpers 函数传入 参数 'user'，在 mapState 中可以直接通过 state 获取状态名。
+
+```js
+import { createNamespacedHelpers } from 'vuex'
+const { mapState } = createNamespacedHelpers('user')	
+<script>
+  export default {
+    computed: {
+      ...mapState({
+        userName: state => state.userName
+      })
+    }
+	}
+</script>
+
+```
+
+2.5 获取模块中的 state，设置命名空间后，mapState 传入模块名
+
+也可以给 mapState 传入模块名参数，这样也可以通过 state 获取数据。
+
+```js
+import { mapState } from 'vuex'	
+<script>
+  export default {
+    computed: {
+      ...mapState('user', { // 传入 模块名参数
+        userName: state => state.userName
+      })
+    }
+	}
+</script>
+```
+
+### getters
+
+与 state 用法一致。
+
