@@ -963,15 +963,15 @@ console.log($p.addClass)
 
 **React.createElement**
 
-![1555939480998](C:\Users\wangtongmeng\AppData\Roaming\Typora\typora-user-images\1555939480998.png)
+![1555939480998](./img/工厂模式-React.createElemnt.png)
 
-![1555939548094](C:\Users\wangtongmeng\AppData\Roaming\Typora\typora-user-images\1555939548094.png)
+![1555939548094](./img/工厂模式-React.createElement-编译后.png)
 
-![1555939615401](C:\Users\wangtongmeng\AppData\Roaming\Typora\typora-user-images\1555939615401.png)
+![1555939615401](./img/工厂模式-react.png)
 
 **vue 异步组件**
 
-![1555939697873](C:\Users\wangtongmeng\AppData\Roaming\Typora\typora-user-images\1555939697873.png)
+![1555939697873](./img/工厂模式-vue异步组件.png)
 
 设计原则验证
 
