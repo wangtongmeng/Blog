@@ -1105,3 +1105,464 @@ import { mapState } from 'vuex'
 
 与 state 用法一致。
 
+### mutations
+
+state 中的值不能直接赋值修改，需通过 mutations 中的方法来修改 state。在 mutations.js 中定义方法，并在Vuex.Store 实例中注入。
+
+1.直接使用 commit 方法，传参是一个值
+
+```js
+// 组件中
+methods: {
+  handleChangeAppName () {
+    this.$store.commit('SET_APP_NAME', 'newAppName')
+  }
+}
+// 根级别 mutations.js 
+import vue from'vue'
+const mutations = {
+	SET_APP_NAME (state, params) {
+		state.appName = params
+	}
+}
+export default mutations
+```
+
+2.直接使用 commit 方法，传参是一个对象
+
+```js
+// 组件中
+methods: {
+  handleChangeAppName () {
+    this.$store.commit('SET_APP_NAME', {
+      appName: 'newAppName'
+    })
+  }
+}
+// 根级别 mutations.js 
+import vue from'vue'
+const mutations = {
+	SET_APP_NAME (state, params) {
+		state.appName = params.appName
+	}
+}
+export default mutations
+```
+
+3.直接使用 commit 方法，对象的写法
+
+```js
+// 组件中
+methods: {
+  handleChangeAppName () {
+    this.$store.commit({
+			type: 'SET_APP_NAME',
+			appName: 'newAppName'
+		})
+  }
+}
+// 根级别 mutations.js 
+import vue from'vue'
+const mutations = {
+	SET_APP_NAME (state, params) {
+		state.appName = params.appName
+	}
+}
+export default mutations
+```
+
+4.使用 mapMutations 辅助函数
+
+```js
+// 组件中
+import { mapMutations } from 'vuex'
+export default {
+  methods: {
+    ...mapMutations([
+			'SET_APP_NAME'
+		]),
+    handleChangeAppName () {
+    	// this.SET_APP_NAME('newAppName') // 1. 参数为一个值
+    	this.SET_APP_NAME({ appName: 'newAppName' }) // 2. 参数为一个对象
+ 		}
+  }
+}
+// 根级别 mutations.js 
+import vue from'vue'
+const mutations = {
+	SET_APP_NAME (state, params) {
+		// state.appName = params // 1. 参数为一个值
+    state.appName = params.appName // 2. 参数为一个对象
+	}
+}
+export default mutations
+```
+
+5.使用模块中的 mutations 方法
+
+不使用命名空间时，使用模块中的 mutations 和根级别中的 mutations 用法相同。
+
+若使用命名空间，需要传入模块名
+
+```js
+// 组件中
+import { mapMutations } from 'vuex'
+export defualt {
+  methods: {
+    // ...mapMutations([ // 1. 不使用命名空间
+		// 	'SET_USER_NAME'
+		// ]),
+    ...mapMutations('user', [ // 2. 使用命名空间
+			'SET_USER_NAME',
+		]),
+    changeUserName () {
+			this.SET_USER_NAME('vue-course')
+		}
+  }
+}
+  
+// user.js 模块
+const mutations = {
+	SET_USER_NAME (state, params) {
+		state.userName = params
+	}
+}
+export default {
+	// namespaced: true, 1. 不使用命名空间
+  namespaced: true, // 2. 使用命名空间
+	state,
+	getters,
+	mutations,
+	actions
+}
+```
+
+6.通过 mutations修改 state 中 没有的值
+
+通过 vue 的 set 方法来进行响应式的修改。
+
+```js
+// 组件中
+import { mapMutations } from 'vuex'
+export defualt {
+  methods: {
+    setAppVersion () {
+      this.$store.commit('SET_APP_VERSION')
+    }
+  }
+}
+
+// 根级别 mutations.js 
+import vue from'vue'
+const mutations = {
+	SET_APP_VERSION (state) {
+		vue.set(state, 'appVersion', 'v2.0')
+	}
+}
+export default mutations
+```
+
+### actions
+
+定义好 actions
+
+```js
+// 根级别 actions.js
+import { getAppName } from '@/api/app'
+
+const actions = {
+	// updateAppName ({ commit }) {
+	// 	getAppName().then(res => {
+	// 		const { info: { appName } } = res
+	// 		commit('SET_APP_NAME', appName)
+	// 	}).catch(err => {
+	// 		console.log(err)
+	// 	})
+	// }
+	async updateAppName ({ commit }) { // 使用 async await 处理异步请求
+		try {
+			const {info: { appName }} = await getAppName()
+			commit('SET_APP_NAME', appName)
+		} catch (err) {
+			console.log(err)
+		}
+	}
+}
+export default actions
+// /api/app.js
+export const getAppName = () => {
+	return new Promise((resolve, reject) => {
+		const err = null
+		setTimeout(() => {
+			if(!err) resolve({ code: 200, info: { appName: 'newAppName' } })
+			else reject(err)
+		})
+	})
+}
+```
+
+1.通过辅助函数 mapActions
+
+```js
+// 组件中
+import { mapActions } from 'vuex'
+export default {
+  methods: {
+    ...mapActions([
+			'updateAppName'
+		]),
+    handleChangeAppName () {
+			this.updateAppName()
+		},
+  }
+}
+```
+
+2.通过 dispatch 方法
+
+```js
+// 组件内
+methods: {
+  handleChangeAppName () {
+    this.$store.dispatch('updateAppName')
+  }
+}
+```
+
+模块中的 actions
+
+```js
+// user.js
+const actions = {
+	updateUserName ({ commit, state, rootState, dispatch}) {
+
+	}
+}
+
+export default {
+	state,
+	getters,
+	mutations,
+	actions
+}
+```
+
+### module
+
+动态注册模块 给模块添加模块
+
+```js
+// 组件内
+computed: {
+		...mapState('user', {
+      todoList: state => state.todo ? state.todo.todoList: [] // 1. 动态注册模块
+      // todoList: state => state.user.todo ? state.user.todo.todoList: [] // 2. 给模块添加模块
+		})
+},
+methods: {
+  registerModule () {
+    this.$store.registerModule('todo', { // 1. 动态注册模块
+    // this.$store.registerModule(['user', 'todo'], { // 2. 给模块添加模块
+      state: {
+        todoList: ['学习1', '学习2']
+      }
+    })
+  }
+}
+```
+
+## 状态管理-Vuex-进阶
+
+- 插件
+- 严格模式
+- vuex+双向绑定
+
+### 插件
+
+定义一个持久化存储的插件 
+
+**定义一个插件**
+
+```js
+// /store/plugin/saveInLocal.js
+
+// 函数会在 store 实例初始化时调用
+export default store => {
+	if (localStorage.state) store.replaceState(JSON.parse(localStorage.state))
+	store.subscribe((mutations, state) => {
+		// 每次提交 mutation 时，都会调用此回调函数
+		localStorage.state = JSON.stringify(state)
+	})
+}
+```
+
+**在 store 实例中注册插件**
+
+```js
+// /store.index.js
+
+import saveInLocal from './plugin/saveInLocal'
+
+Vue.use(Vuex)
+
+export default new Vuex.Store({
+	plugins: [ saveInLocal ]
+})
+```
+
+### 严格模式
+
+当 strict 为 true 时，为严格模式，严格模式下不能通过直接赋值的形式修改 state，只能通过 commit 的方式修改。
+
+我们通过环境变量动态设置 strict 的值，开发环境下使用严格模式，生产环境下不使用。
+
+```js
+// /store.index.js
+export default new Vuex.Store({
+	strict: process.env.NODE_ENV === 'development',
+})
+```
+
+### vuex+双向绑定
+
+非 v-model 形式，通过 state 传入 value，通过 mutations 修改值。
+
+```js
+<--自定义组件 AInput.vue-->
+<template>
+	<input @input="handleInput" :value="value" />
+</template>
+<script>
+export default {
+	name: 'AInput',
+	props: {
+		value: {
+			type: [String, Number],
+			default: ''
+		}
+	},
+	methods: {
+		handleInput (event) {
+			const value = event.target.value
+			this.$emit('input', value)
+		}
+	}
+}
+</script>
+
+```
+
+```html
+<--组件内-->
+<template>
+  <a-input :value="stateValue" @input="hanldeStateValueChange" />
+  <p>{{ stateValue }}</p>
+</template>
+<script>
+  import { mapState, mapMutations } from 'vuex'
+  export default {
+    computed: {
+      ...mapState({
+      	stateValue: state => state.stateValue
+    }),
+    methods: {
+      ...mapMutations([
+        'SET_STATE_VALUE'
+      ]),
+      hanldeStateValueChange (val) {
+        this.SET_STATE_VALUE(val)
+      }
+    }
+  }  
+</script>
+```
+
+```js
+// 根级别 mutations.js
+import vue from'vue'
+
+const mutations = {
+	SET_STATE_VALUE (state, value) {
+		state.stateValue = value
+	}
+}
+export default mutations
+// 根级别 state.js
+const state = {
+	stateValue: 'abc'
+}
+export default state
+```
+
+v-model 形式
+
+设置计算属性的 get 和 set 方法。
+
+```js
+<--组件内-->
+<template>
+  <a-input v-model="stateValue" />
+  <p>{{ stateValue }}</p>
+</template>
+<script>
+  import { mapMutations } from 'vuex'
+  export default {
+    computed: {
+      stateValue: {
+        get () {
+          return this.$store.state.stateValue
+        },
+        set (val) {
+          this.SET_STATE_VALUE(val)
+        }
+      },
+    },
+    methods: {
+      ...mapMutations([
+        'SET_STATE_VALUE'
+      ]),
+      hanldeStateValueChange (val) {
+        this.SET_STATE_VALUE(val)
+      }
+    }
+  }  
+</script>
+```
+
+## Ajax 请求实战
+
+- 解决跨域问题
+- 封装 axios
+  - 请求拦截
+  - 响应拦截
+- 请求实战
+
+### 解决跨域问题
+
+1. 设置代理
+2. 在服务端设置一些 header 头
+
+![跨域](./img/跨域.png)
+
+
+
+**设置代理**
+
+通过设置代理，设置到同一域名下，从而避免跨域。
+
+```js
+// vue.config.js
+module.exports = {
+	devServer: {
+		proxy: 'http://localhost:4000' // 服务端 url
+	}
+}
+```
+
+**在服务端设置 header 头**
+
+![跨域-服务端-header](./img/跨域-服务端-header.png)
+
+### 封装 axios
+
+以类的形式来封装
