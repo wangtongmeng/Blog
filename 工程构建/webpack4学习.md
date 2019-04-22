@@ -8,7 +8,9 @@
 - 拥有工程化的前端思维
 - 步入高级前端工程师行里
 
-## webpack 是什么
+## 第 2 章 webpack 初探
+
+### webpack 是什么
 
 模块打包工具
 
@@ -17,9 +19,9 @@
   - documentation-concepts-modules
   - documentation-api-modules
 
-## 安装 webapck
+### 安装 webapck
 
-### webapck 环境搭建
+#### webapck 环境搭建
 
 安装 Node 和 npm
 
@@ -32,7 +34,7 @@ node -v
 npm -v
 ```
 
-### webapck 全局安装
+#### webapck 全局安装
 
 **安装 webpack**
 
@@ -58,7 +60,7 @@ npm uninstall webpack webpack-cli -g
 
 >  全局安装的坏处：若两个项目一个是 webpack 4 一个是 webpack 3，那么在全局安装 webpack 4 的情况下，3 的项目就无法运行了。
 
-### webapck 局部安装
+#### webapck 局部安装
 
 进入项目目录
 
@@ -75,4 +77,46 @@ npm install webapck webpack -D
 ```shell
 npx webpack -v
 ```
+
+查看 wbepack 历史版本
+
+```shell
+npm info webpack
+```
+
+安装老版本 webpack
+
+```shell
+npm install webpack@4.16.5 webpack-cli -D
+```
+
+### 使用Webpack的配置文件
+
+项目根目录创建 webpack.config.js
+
+```js
+// webpack.config.js
+const path = require('path')
+
+module.exports = {
+  entry: './src/index.js',
+  output: {
+    filename: 'bundle.js',
+    // 改变输出路径需要使用 绝对路径，利用 node 的 path 模块的 resolve 方法，第一个参数 __dirname 指的是 index.js 所在目录 和 dist 结合，形成绝对路径。
+    path: path.resolve(__dirname, 'dist')
+  }
+}
+```
+
+运行 `npx webpack` 即可。运行此命令，webpack 并不知道要如何打包，它回去找默认文件 `webpack.config.js` 获取配置信息。
+
+**打包时，不使用默认配置文件**
+
+```shell
+npx webpack --config webpackconfig.js
+```
+
+
+
+
 
