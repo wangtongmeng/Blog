@@ -1566,3 +1566,155 @@ module.exports = {
 ### 封装 axios
 
 以类的形式来封装
+
+**配置基础url**
+
+在 /config/index.js 中配置基础请求 url。
+
+```js
+// 若设置了代理，这里的开发环境域名可以设为 '', 若没设置代理要写服务端 url
+export const baseURL = process.env.NODE_ENV == 'production' ? 'http://production.com' : 'http://localhost: 3000'
+```
+
+**以类的形式封装 axios，并设置拦截器**
+
+以类的形式封装 axios
+
+- 设置公共配置
+- 添加请求和响应拦截器，在拦截器中做可复用的处理，如请求 loading
+  - 通过队列处理多请求的 loading 状态
+
+```js
+// /lib/axios.js
+import axios from 'axios'
+import { baseURL } from '@/config'
+class HttpRequest {
+  constructor (baseUrl = baseURL) {
+    this.baseUrl = baseUrl
+    this.queue = {}
+  }
+  getInsideConfig () {
+    const config = {
+      baseURL: this.baseUrl,
+      headers: {
+        //
+      }
+    }
+    return config
+  }
+  distroy (url) {
+    delete this.queue[url]
+    if (!Object.keys(this.queue).length) {
+      // Spin.hide()
+    }
+  }
+  interceptors (instance, url) {
+    instance.interceptors.request.use(config => {
+      // 添加全局的loading...
+      if (!Object.keys(this.queue).length) {
+        // Spin.show()
+      }
+      this.queue[url] = true
+      return config
+    }, error => {
+      return Promise.reject(error)
+    })
+    instance.interceptors.response.use(res => {
+      this.distroy(url)
+      const { data, status } = res
+      return { data, status }
+    }, error => {
+      this.distroy(url)
+      return Promise.reject(error)
+    })
+  }
+  request (options) {
+    const instance = axios.create()
+    options = Object.assign(this.getInsideConfig(), options)
+    this.interceptors(instance, options.url)
+    return instance(options)
+  }
+}
+export default HttpRequest
+```
+
+**生成封装的 axios 实例**
+
+```js
+// /api/index.js
+import HttpRequest from '@/lib/axios'
+
+const axios = new HttpRequest()
+export default axios
+```
+
+**在具体请求模块中使用封装的 axios 实例书写具体接口请求函数**
+
+```js
+// /api/user.js
+import axios from './index'
+
+export const getUserInfo = ({ userId }) => {
+	return axios.request({
+		url: '/getUserInfo',
+		method: 'post',
+		data: {
+			userId
+		}
+	})
+}
+```
+
+**在组件中使用接口请求函数**
+
+```js
+// 组件中
+<script>
+  import { getUserInfo } from '@/api/user'
+export default {
+  methods: {
+    getInfo () {
+			getUserInfo({ userId: 21 }).then(res => {
+				console.log(res)
+			})
+		}
+  }
+}
+</script>
+```
+
+## 使用 Mock 模拟 Ajax 请求
+
+- 响应模拟
+- Mock用法精讲
+
+### 响应模拟
+
+**在入口文件引入 mock 代码**
+
+在入口文件引入 mock 代码，并根据环境只在非生产环境下引入。
+
+```js
+// main.js
+if (process.env.NODE_ENV !== 'production') require('./mock')
+```
+
+**响应模拟**
+
+```js
+// /mock/index.js
+import Mock from 'mockjs'
+import { getUserInfo } from './response/user'
+
+Mock.mock('http://localhost:3000/getUserInfo', getUserInfo)
+
+export default Mock
+
+// /mock/response/user.js
+export const getUserInfo = options => {
+	return {
+		name: 'lison'
+	}
+}
+```
+
