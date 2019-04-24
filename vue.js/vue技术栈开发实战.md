@@ -1718,3 +1718,15 @@ export const getUserInfo = options => {
 }
 ```
 
+### Mock用法精讲
+
+[mockjs笔记](https://github.com/littlebirdflying/front-end-practice/blob/master/vue.js/vue%E6%8A%80%E6%9C%AF%E6%A0%88%E5%BC%80%E5%8F%91/vue-course/src/mock/mock.doc.md)
+
+## Vue中的第三方JS库的使用
+
+从数字渐变组件谈第三方JS库的使用
+
+- 组件封装基础
+- 组件中使用Id值
+- 组件中获取DOM
+
