@@ -1730,3 +1730,24 @@ export const getUserInfo = options => {
 - 组件中使用Id值
 - 组件中获取DOM
 
+### 组件封装基础
+
+mounted阶段，dom挂在完成，但渲染不一定完成，所以要在渲染完成需要使用 $nextTick
+
+this._uid全局自增唯一的
+
+父组件调用子组件内部方法
+
+设置组件默认样式
+
+​	定义组件样式的三种方式
+
+​		Import @import  直接写
+
+
+
+给组件传值，传值类型，默认值（基本类型和引用类型），必须
+
+组件的id值
+
+ref 和 slot 的使用
