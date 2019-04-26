@@ -1751,3 +1751,11 @@ this._uid全局自增唯一的
 组件的id值
 
 ref 和 slot 的使用
+
+## 从 SplitPane组件谈Vue中如何“操作”DOM
+
+- 简单两列布局
+- 如何让两个 div 改变宽度
+- 鼠标拖动效果
+- v-model 和 .sync 的用法
+
