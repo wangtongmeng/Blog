@@ -1732,11 +1732,336 @@ export const getUserInfo = options => {
 
 ### 组件封装基础
 
-mounted阶段，dom挂在完成，但渲染不一定完成，所以要在渲染完成需要使用 $nextTick
+数字动画库：https://inorganik.github.io/countUp.js/
+
+把这个数字动画库封装成一个 vue 组件。
+
+**安装 countup 库**
+
+```shell
+npm install countup
+```
+
+**新建自定义组件**
+
+新建 /components/count-to/ 文件夹，并在其中创建 index.js 和 count-to.vue 文件。
+
+index.js 的作用是我们在引用组件时可以简写 `import CountTo from '_c/count-to'`, vue 会自动找 count-to 文件夹中的 index.js，由于在 index.js 引入了组件，所以相等于引入了组件，达到了简写的目的。
+
+```js
+import CountTo from './count-to.vue'
+export default CountTo
+```
+
+在组件中引入 js 库，并命名。
+
+```html
+<--/components/count-to.vue-->
+<template>
+  <div></div>
+</template>
+<script>
+  import CountUp from 'countup'
+  export defualt {
+    name: 'CountTo'
+  }
+</script>
+```
+
+**新建页面**	
+
+新建页面，引入 count-to 组件。
+
+```html
+<-- /views/count-to.vue-->
+<template>
+	<div>
+  	<count-to></count-to>
+  </div>
+</template>
+<script>
+  import CountTo from '_c/count-to'
+  export default {
+    name: 'count_to',
+    components: {
+      CountTo
+    }
+  }
+</script>
+```
+
+**新建路由**
+
+配置页面路由。
+
+```js
+// router.js
+[
+  {
+		path: '/count-to',
+		name: 'count_to',
+		component: () => import('@/views/count-to.vue')
+	},
+]
+```
+
+**使用唯一 id 值**
 
 this._uid全局自增唯一的
 
+mounted阶段，dom挂在完成，但渲染不一定完成，所以要在渲染完成需要使用 $nextTick。
+
+```js
+<--/components/count-to.vue-->
+<template>
+  <div>
+  	<span :id="eleId"></span>
+  </div>
+</template>
+<script>
+  import CountUp from 'countup'
+  export defualt {
+    name: 'CountTo',
+      computed: {
+        eleId () {
+          return `count_up_${this._uid}`
+        }
+      },
+    mounted () {
+      this.$nextTick(() => {
+        const counter = new CountUp(this.eleId)
+      })	
+    }
+  }
+</script>
+```
+
+**封装组件**
+
+- 根据传参确定 props，确定必传参数和可选参数。
+
+- 也可以根据需求，自己创建 props，结合库的方法来用，例如，设置动画延迟时间。
+- 组件样式
+  - 外层样式可以直接设置 class 类名实现。
+  - 组件内部样式标签样式，通过 props 传入，绑定 class 的方式实现。
+- 给组件添加自定义内容
+  - 单个使用 slot，多个使用 具有 slot
+
+实现一个基础的组件。
+
+```html
+<--/components/count-to.vue-->
+<template>
+	<div>
+		<slot name="left"></slot><span :class="countClass" :id="eleId"></span><slot name="right"></slot>
+	</div>
+</template>
+<script>
+import CountUp from 'countup'
+// import CountUp from 'countup.js'
+export default {
+	name: 'CountTo',
+	data () {
+		return {
+			counter: {}
+		}
+	},
+	computed: {
+		eleId () {
+			return `count_up_${this._uid}`
+		},
+		countClass () {
+			return [
+				'count-to-number', // 默认内部标签 class
+				this.className // 外部传入的 内部标签 class
+			]
+		}
+	},
+	props: {
+		/**
+		 * @description 起始值
+		 */
+		startVal: {
+			type: Number,
+			default: 0
+		},
+		/**
+		 * @description 最终值
+		 */
+		endVal: {
+			type: Number,
+			required: true // 必填值
+		},
+		/**
+		 * @description 小数点后保留几位小数
+		 */
+		decimals: {
+			type: Number,
+			default: 0
+		},
+		/**
+		 * @description 动画延迟开始时间
+		 */
+		delay: {
+			type: Number,
+			default: 0
+		},
+		/**
+		 * @description 渐变时长
+		 */
+		duration: {
+			type: Number,
+			default: 1
+		},
+		/**
+		 * @description 是否使用变速效果
+		 */
+		useEasing: {
+			type: Boolean,
+			default: false
+		},
+		/**
+		 * @description 数字是否分组
+		 */
+		useGrouping: {
+			type: Boolean,
+			default: true
+		},
+		/**
+		 * @description 分组符号
+		 */
+		separator: {
+			type: String,
+			default: ','
+		},
+		/**
+		 * @description 整数和小数分割符号
+		 */
+		decimal: {
+			type: String,
+			default: '.'
+		},
+		className: {
+			type: String,
+			default: ''
+		}
+
+	},
+	
+	mounted () {
+		this.$nextTick(() => {
+			this.counter = new CountUp(this.eleId, this.startVal, this.endVal, this.decimals,this.duration, {
+				useEasing: this.useEasing,
+				useGrouping: this.useGrouping,
+				separator: this.separator,
+				decimal: this.decimal
+			})
+			setTimeout(() => {
+				this.counter.start()
+			}, this.delay)
+		})
+	}
+}
+</script>
+```
+
+在页面中使用。
+
+```js
+<template>
+	<div>
+		<count-to :end-val="100">
+			<span slot="left">总金额：</span>
+			<span slot="right">元</span>
+		</count-to>
+	</div>
+</template>
+<script>
+import CountTo from '_c/count-to'
+export default {
+	name: 'count_to',
+	components: {
+		CountTo
+	}
+}
+</script>
+```
+
+### 组件中获取DOM
+
 父组件调用子组件内部方法
+
+- 先获取dom，可以通过 id 或者 ref，ref 用在组件上获取的就是组件实例，用在原生 html 标签上获取的就是dom。
+- 在父组件中，通过 ref 获取组件实例中的方法，再通过 ref 获取到具体 dom 的信息。
+
+```html
+<--父组件-->
+<template>
+	<div>
+		<count-to ref="countTo" :end-val="100">
+		</count-to>
+		<button @click="getNumber">获取数值</button>
+	</div>
+</template>
+<script>
+import CountTo from '_c/count-to'
+export default {
+	name: 'count_to',
+	components: {
+		CountTo
+	},
+	methods: {
+		getNumber () {
+			this.$refs.countTo.getCount()
+		}
+	}
+}
+</script>
+```
+
+```html
+<--子组件-->
+<template>
+	<div>
+		<slot name="left"></slot><span ref="number" :class="countClass" :id="eleId"></span><slot name="right"></slot>
+	</div>
+</template>
+<script>
+import CountUp from 'countup'
+// import CountUp from 'countup.js'
+export default {
+	methods: {
+		getCount () {
+			console.log(this.$refs.number.innerText)
+		}
+	}
+}
+</script>
+```
+
+更新值，利用 watch 监听值得变化，并调用js库更新 api
+
+添加事件，动画更新后事件
+
+设置初始样式，用到 style
+
+引入 less 文件
+
+- import
+- 在 style 标签中直接写样式
+- 在 style 标签中通过 @import 引入
+
+
+
+
+
+
+
+
+
+
+
+
 
 设置组件默认样式
 
@@ -1744,13 +2069,25 @@ this._uid全局自增唯一的
 
 ​		Import @import  直接写
 
-
-
 给组件传值，传值类型，默认值（基本类型和引用类型），必须
 
 组件的id值
 
 ref 和 slot 的使用
+
+如果 props 传入的是引用类型，需要通过函数的形式返回默认值
+
+```js
+
+ delay: {
+  type: Array,
+  default: () =>{
+    return []
+  }
+}
+```
+
+
 
 ## 从 SplitPane组件谈Vue中如何“操作”DOM
 
