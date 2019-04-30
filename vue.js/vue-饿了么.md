@@ -68,7 +68,7 @@ vue add cube-ui
 - 使用后编译（减少打包体积）
 - 部分引入 type（减少代码体积）
 - 自定义主题
-- 不适用 rem、vw
+- 不使用 rem、vw
 
 ```shell
 ? Use post-compile? Yes
