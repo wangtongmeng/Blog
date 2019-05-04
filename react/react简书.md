@@ -142,3 +142,182 @@ import App from './App';
 ReactDOM.render(<App />, document.getElementById('root'));
 ```
 
+## React 基础精讲
+
+本章通过TodoList功能的实现，给大家完整介绍React的基础语法，设计理念以及围绕React展开的一些编程思维。
+
+### 使用React编写TodoList功能
+
+- 在 index.js 中引入 TodoList 组件
+- 创建 TodoList 组件
+  - render 中 圆括号() 的作用使得我们可以换行书写
+  - 使用 Fragment 占位符作为包裹元素
+
+**引入 TodoList 组件**
+
+```js
+// index.js
+import React from 'react';
+import ReactDOM from 'react-dom';
+import TodoList from './TodoList';
+
+ReactDOM.render(<TodoList />, document.getElementById('root'));
+
+```
+
+**创建 TodoList 组件**
+
+```js
+// TodoList.js
+import React, { Component, Fragment } from 'react'
+
+class TodoList extends Component {
+	render() {
+		return (
+			<Fragment>
+				<div>
+					<input />
+					<button>提交</button>
+				</div>
+				<ul>
+					<li>学英语</li>
+					<li>learn react</li>
+				</ul>
+			</Fragment>
+		)
+	}
+}
+
+export default TodoList
+```
+
+### React 中的响应式设计思想和事件绑定
+
+实现 input 框的响应式
+
+- state 存储数据
+- 绑定数据或方法通过 `{}` 包裹
+- 绑定函数时通过 bind 绑定 this
+- 修改 state 数据，通过 setState 修改
+
+```js
+// TodoList.js
+import React, { Component, Fragment } from 'react'
+
+class TodoList extends Component {
+
+  constructor (props) {
+    super(props)
+    this.state = {
+      inputValue: '',
+      list: []
+    }
+  }
+	render() {
+		return (
+			<Fragment>
+				<div>
+					<input 
+      			value={this.state.inputValue} 
+  					onChange={this.handleInputChange.bind(this)} 
+          />
+					<button>提交</button>
+				</div>
+				<ul>
+					<li>学英语</li>
+					<li>learn react</li>
+				</ul>
+			</Fragment>
+		)
+  }
+  handleInputChange (event) {
+    this.setState({
+      inputValue: event.target.value
+    })
+  }
+}
+
+export default TodoList
+
+```
+
+### 实现 TodoList 新增删除功能
+
+- 通过 ... 展开运算符，展开数组，结合添加数据，完成添加功能
+- 通过 bind 传入第二个参数 index ，完成定位要删除的数据
+- 删除数据时，先复制原数组，完成删除操作，再通过 setState 覆盖原有数据。不要直接在原数据上操作，不利于 react 性能优化。
+
+```js
+// TodoList.js
+import React, { Component, Fragment } from 'react'
+
+class TodoList extends Component {
+
+  constructor (props) {
+    super(props)
+    this.state = {
+      inputValue: '',
+      list: []
+    }
+  }
+	render() {
+		return (
+			<Fragment>
+				<div>
+					<input value={this.state.inputValue} onChange={this.handleInputChange.bind(this)} />
+					<button onClick={this.handleBtnClick.bind(this)}>提交</button>
+				</div>
+				<ul>
+					{
+            this.state.list.map((item, index) => {
+              return (
+                <li 
+                  key={index} 
+                  onClick={this.handleItemDelete.bind(this, index)}
+                >
+                  {item}
+                </li>
+                )
+            })
+          }
+				</ul>
+			</Fragment>
+		)
+  }
+  
+  handleInputChange (event) {
+    this.setState({
+      inputValue: event.target.value
+    })
+  }
+
+  handleBtnClick () {
+    this.setState({
+      list: [...this.state.list, this.state.inputValue],
+      inputValue: ''
+    })
+  }
+
+  handleItemDelete (index) {
+    // imumutable
+    // state 不允许我们做任何改变
+    const list = [...this.state.list]
+    list.splice(index, 1)
+    this.setState({
+      list: list
+    })
+  }
+}
+
+export default TodoList
+
+```
+
+### JSX语法细节补充
+
+### 拆分组件与组件之间的传值
+
+### TodoList 代码优化
+
+### 围绕 React 衍生出的思考
+
