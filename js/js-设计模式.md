@@ -978,3 +978,133 @@ console.log($p.addClass)
 - 构造函数和创建者分离
 - 符合开放封闭原则
 
+## 第 5 章 单例模式
+
+单例模式的核心结构中只包含一个被称为单例的特殊类。概念、UML类图仍是必须，本章使用的场景是 jquery中只有一个$，redux 和 vuex 的 store，一个系统中只有一套登录逻辑
+
+### 介绍
+
+- 系统中被唯一使用
+- 一个类只有一个实例
+
+### UML 类图演示
+
+说明
+
+- 单例模式需要用到 java 的特性( private )
+- ES6 中没有 (typescript 例外)
+- 只能用 java 代码来演示 UML 图的内容
+
+![设计模式-单例uml](./img/设计模式-单例uml.png)
+
+JS中使用单例模式
+
+```js
+class SingleObject {
+  login () {
+    console.log('login...')
+  }
+}
+// getInstance 是静态方法，即只有一个方法，不随 new 增加
+SingleObject.getInstance = (function () {
+  let instance
+  return function () {
+    if (!instance) {
+      instance = new SingleObject()
+    }
+    return instance
+  }
+})()
+
+// 测试： 注意这里只能使用静态函数 getInstance, 不能 new SingleObject !!!
+let obj1 = SingleObject.getInstance()
+obj1.login()
+let obj2 = SingleObject.getInstance()
+obj2.login()
+
+console.log('obj1 === obj2', obj1 === obj2) // 两者必须完全相等
+```
+
+### 场景(jq的$和登录框逻辑)
+
+- jQuery 只是一个 $
+- 模拟登录框
+- 其他
+  - 购物车(和登录框类似)
+  - vuex 和 redux 中的 store
+
+**jQuery**
+
+```js
+// jQuery 只有一个 `$`
+if (window.jQuery != null) {
+  return window.jQuery
+} else {
+  // 初始化...
+}
+
+```
+
+**模拟登录框**
+
+```js
+class LoginForm {
+  constructor () {
+    this.state = 'hide'
+  }
+  show () {
+    if (this.state === 'show') {
+      alert('已经显示')
+      return
+    }
+    this.state = 'show'
+    console.log('登录框显示成功')
+  }
+  hide () {
+    if (this.state === 'hide') {
+      alert('已经隐藏')
+      return
+    }
+    this.state = 'hide'
+    console.log('登录框隐藏成功')
+  }
+}
+
+LoginForm.getInstance = (function () {
+  let instance
+  return function () {
+    if (!instance) {
+      instance = new LoginForm()
+    }
+    return instance
+  }
+})()
+
+// 测试
+let login1 = LoginForm.getInstance()
+login1.show()
+
+let login2 = LoginForm.getInstance()
+login2.hide()
+
+console.log('login1 === login2', login1 === login2)
+```
+
+**其他**
+
+- 购物车(和登录框类似)
+- vuex 和 redux 中的 store
+
+**设计原则验证**
+
+- 符合单一职责原则，只实例化唯一的对象
+- 没法具体开发封闭原则，但是绝不违反开放封闭原则
+
+### 总结
+
+- 介绍和示例
+- UML 类图和演示
+- 经典使用场景
+
+
+
