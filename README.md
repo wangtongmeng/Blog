@@ -20,7 +20,7 @@ my study notes
 
 ### css
 
-- [ps切图](css 和 html/切图.md)
+- [ps切图](https://github.com/littlebirdflying/Blog/blob/master/css%26html/%E5%88%87%E5%9B%BE.md)
 
 ### js
 
