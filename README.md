@@ -16,3 +16,27 @@ my study notes
 - pc 端使用 Typora 编写 markdown 笔记，便于**文件导航**与**文件内容导航**。
 - github 仓库作为云端，便于同步和复习。
 
+## 笔记
+
+### css
+
+- [ps切图](./css 和 html/切图.md)
+
+### js
+
+### vue
+
+### react
+
+### 小程序
+
+### webpack
+
+### node
+
+### 数据结构与算法
+
+### 设计模式
+
+
+
