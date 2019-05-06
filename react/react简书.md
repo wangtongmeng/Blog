@@ -142,7 +142,7 @@ import App from './App';
 ReactDOM.render(<App />, document.getElementById('root'));
 ```
 
-## React 基础精讲
+## 第3章 React 基础精讲
 
 本章通过TodoList功能的实现，给大家完整介绍React的基础语法，设计理念以及围绕React展开的一些编程思维。
 
