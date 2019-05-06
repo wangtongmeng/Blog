@@ -2058,6 +2058,117 @@ export default {
 - 鼠标拖动效果
 - v-model 和 .sync 的用法
 
+## **Vue技术栈开发实战-渲染函数和JSX快速掌握**
+
+1. render函数
+2. 函数式组件
+3. JSX
+4. 作用域插槽
+
+### render 函数
+
+h 接收 3 个参数，后两个可选。
+
+第一个标签或组件
+
+第二个属性等
+
+第三个包裹的东西，字符串或数组
+
+组件: 
+
+​	添加的属性
+
+- attrs
+- style
+- props 传值
+- 绑定监听事件
+- 组件绑定click事件(是vue组件自带的事件)
+- 设置 class(添加到组件最外层标签上)保留字要用引号引起来，类名的定义和在组件中定义是一样的
+- 指令
+- 插槽
+- key
+- ref
+
+```js
+{
+		// 'class': 'count-up wrapper',
+		// 'class': ['count-to', true ? 'aa': 'bb'],
+		'class': {'count-to': 1 === 1},
+		attrs: {},
+		style: {},
+		props: {
+			endVal: 100
+		},
+		// domProps: {
+		// 	innerHTML: '123'
+		// },
+		on: {
+			'on-animation-end': val => {
+				console.log('animation end!')
+			}
+		},
+		nativeOn: {
+			'click': () => {
+				console.log('click')
+			}
+		},
+		directives: [],
+		scopedSlots: {},
+		slot: '',
+		key: '',
+		ref: ''
+	}
+```
+
+添加子元素
+
+第 2 个参数如果为空可以不写，第 3 个参数可以使字符串或数组
+
+```js
+render: h => h('div', 123)
+```
+
+如果只有一个子节点，也要是数组的形式
+
+```js
+render: h => h('div', [
+		h('span', '111')
+	])
+```
+
+通过 render 函数实现列表展示
+
+```html
+<template>
+	<div>
+		<ul @click="handleClick">
+			<li @click.stop="handleClick" v-for="(item, index) in list" :key="`list_item_${index}`">{{ item.name }}</li>
+		</ul>
+	</div>
+</template>
+<script>
+export default {
+	data () {
+		return {
+			list: [
+				{name: 'lison'},
+				{name: 'liili'},
+			]
+		}
+	},
+	methods: {
+		handleClick (event) {
+			console.log(event)
+		}
+	}
+}
+</script>
+
+```
+
+
+
 ## 递归组件的使用
 
 - 封装简单的 Menu 组件
