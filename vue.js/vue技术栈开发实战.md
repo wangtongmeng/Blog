@@ -2167,6 +2167,138 @@ export default {
 
 ```
 
+用 render 函数实现上述 template 的内容
+
+```js
+// main.js
+
+const handleClick = event => {
+	console.log(event)
+	event.stopPropagation();
+}
+
+let list = [{name: 'lison'}, {name: 'lili'}]
+const getLiEleArr = h => {
+	return list.map((item, index) => h('li', {
+		on: {
+			'click': handleClick
+		},
+		key: `list_item_${index}`
+	}, item.name))
+}
+
+new Vue({
+  router,
+  store,
+	render: h => h('div', [
+		h('ul', {
+			on: {
+				'click': handleClick
+			}
+		}, getLiEleArr(h))
+	])
+}).$mount('#app')
+
+```
+
+ #### **函数式组件**
+
+只给它传入数据，但它不做任何响应式的操作，不监听传入组件的状态，没有生命周期和钩子函数，只是作为接收参数的函数。
+
+当我们在其他组件中使用函数式组件时，vue 会对其进行处理，把 render 返回的虚拟节点渲染
+
+ctx 指代当前对象
+
+```html
+// render-page.vue
+<template>
+	<div>
+		<list :list="list" :render="renderFunc"></list>
+	</div>
+</template>
+<script>
+import List from '_c/list'
+export default {
+	components: {
+		List
+	},
+	data () {
+		return {
+			list: [
+				{name: 'lison'},
+				{name: 'liili'},
+			]
+		}
+	},
+	methods: {
+		renderFunc (h, name) {
+			return h('i', {
+				style: {
+					color: 'pink'
+				}
+			}, name)
+		}
+	}
+}
+</script>
+```
+
+```html
+// list.vue
+<template>
+	<ul>
+		<li v-for="(item, index) in list" :key="`item_${index}`">
+			<span v-if="!render">{{ item.name }}</span>
+			<render-dom v-else :render-func="render" :name="item.name"></render-dom>
+		</li>
+	</ul>
+</template>
+<script>
+import RenderDom from '_c/render-dom'
+export default {
+	name: 'List',
+	components: {
+		RenderDom
+	},
+	props: {
+		list: {
+			type: Array,
+			default: () => []
+		},
+		render: {
+			type: Function,
+			default: () => {}
+		}
+	}
+}
+</script>
+
+```
+
+```js
+// render-dom.js
+export default {
+	functional: true,
+	props: {
+		name: String,
+		renderFunc: Function
+	},
+	render: (h, ctx) => {
+		return ctx.props.renderFunc(h, ctx.props.name)
+	}
+}
+```
+
+### JSX
+
+在 js 中写 html 标签的特定语法，最后将其转换成 js，并用 render 函数渲染
+
+render 函数第一个参数必须是 h ，不能使 createElement 了
+
+如果是在 render 组件中写的是不需要在 components 中注册的。
+
+在 jsx 中使用标签或组件
+
 
 
 ## 递归组件的使用
