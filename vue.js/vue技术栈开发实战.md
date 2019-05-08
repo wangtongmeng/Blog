@@ -2201,7 +2201,7 @@ new Vue({
 
 ```
 
- #### **函数式组件**
+ ### **函数式组件**
 
 只给它传入数据，但它不做任何响应式的操作，不监听传入组件的状态，没有生命周期和钩子函数，只是作为接收参数的函数。
 
@@ -2299,7 +2299,181 @@ render 函数第一个参数必须是 h ，不能使 createElement 了
 
 在 jsx 中使用标签或组件
 
+```html
+// render-page.vue
+<template>
+	<div>
+		<list :list="list" :render="renderFunc"></list>
+	</div>
+</template>
+<script>
+import List from '_c/list'
+import CountTo from '_c/count-to'
+export default {
+	components: {
+		List
+	},
+	data () {
+		return {
+			// list: [
+			// 	{name: 'lison'},
+			// 	{name: 'liili'},
+			// ],
+			list: [
+				{number: 100},
+				{number: 45},
+			]
+		}
+	},
+	methods: {
+		// renderFunc (h, name) {
+		renderFunc (h, number) {
+			return (
+				// <i on-click={this.handleClick} style={{color:'pink'}}>{name}</i>
+				<CountTo nativeOn-click={this.handleClick} on-on-animation-end={this.handleEnd} endVal={ number } style={{color:'pink'}}>{name}</CountTo>
+			)
+		},
+		handleClick (event) {
+			console.log(event)
+		},
+		handleEnd () {
+			console.log('end!')
+		}
+	}
+}
+</script>
+```
 
+```html
+// list.vue
+<template>
+  <ul>
+    <li @mousemove.prevent="handleMove" v-for="(item, index) in list" :key="`item_${index}`">
+      <!-- <span v-if="!render">{{ item.name }}</span>
+      <render-dom v-else :render-func="render" :name="item.name"></render-dom> -->
+      <span v-if="!render">{{ item.number }}</span>
+      <render-dom v-else :render-func="render" :number="item.number"></render-dom>
+    </li>
+  </ul>
+</template>
+<script>
+import RenderDom from '_c/render-dom'
+export default {
+  name: 'List',
+  components: {
+    RenderDom
+  },
+  props: {
+    list: {
+      type: Array,
+      default: () => []
+    },
+    render: {
+      type: Function,
+      default: () => {}
+    }
+	},
+	methods: {
+		handleMove (event) {
+			// event.preventDefault()，在非模版写法中
+		}
+	}
+}
+</script>
+```
+
+### 作用域插槽
+
+```html
+<template>
+	<div>
+		<list :list="list">
+			<!-- 作用插槽配合具名插槽使用 -->
+			<!-- <count-to slot="aa" slot-scope="count" :end-val="count.number"></count-to> -->
+			<count-to slot-scope="count" :end-val="count.number"></count-to>
+		</list>
+	</div>
+</template>
+<script>
+import List from '_c/list'
+import CountTo from '_c/count-to'
+export default {
+	components: {
+		List,
+		CountTo
+	},
+	data () {
+		return {
+			// list: [
+			// 	{name: 'lison'},
+			// 	{name: 'liili'},
+			// ],
+			list: [
+				{number: 100},
+				{number: 45},
+			]
+		}
+	},
+	methods: {
+		// renderFunc (h, name) {
+		renderFunc (h, number) {
+			return (
+				// <i on-click={this.handleClick} style={{color:'pink'}}>{name}</i>
+				<CountTo nativeOn-click={this.handleClick} on-on-animation-end={this.handleEnd} endVal={ number } style={{color:'pink'}}>{name}</CountTo>
+			)
+		},
+		handleClick (event) {
+			console.log(event)
+		},
+		handleEnd () {
+			console.log('end!')
+		}
+	}
+}
+</script>
+
+```
+
+```html
+<template>
+  <ul>
+    <li @mousemove.prevent="handleMove" v-for="(item, index) in list" :key="`item_${index}`">
+      <!-- <span v-if="!render">{{ item.name }}</span>
+      <render-dom v-else :render-func="render" :name="item.name"></render-dom> -->
+      <span v-if="!render">{{ item.number }}</span>
+      <!-- <render-dom v-else :render-func="render" :number="item.number"></render-dom> -->
+			<!-- 结合具名插槽使用 -->
+			<!-- <slot name="aa" :number="item.number"></slot>  -->
+			<slot :number="item.number"></slot>
+    </li>
+  </ul>
+</template>
+<script>
+import RenderDom from '_c/render-dom'
+export default {
+  name: 'List',
+  components: {
+    RenderDom
+  },
+  props: {
+    list: {
+      type: Array,
+      default: () => []
+    },
+    render: {
+      type: Function,
+      default: () => {}
+    }
+	},
+	methods: {
+		handleMove (event) {
+			// event.preventDefault()，在非模版写法中
+		}
+	}
+}
+</script>
+
+```
 
 ## 递归组件的使用
 
