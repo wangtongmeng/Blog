@@ -226,6 +226,12 @@ app.use(async (ctx, next) => {
 })
 ```
 
+### 2-7 强制 Promise
+
+next() 返回的是 promise
+
+### 2-8 深入理解 async 和 await
+
 
 
 
