@@ -1112,9 +1112,63 @@ console.log('login1 === login2', login1 === login2)
 
 ### 适配器模式-介绍
 
+- 就接口格式和使用者不兼容
+- 中间加一个适配转换接口
+
+类似于现实中的插头转换器
+
 ### 适配器模式-演示
 
+**简化后的 uml 类图**
+
+Adaptee类 需要被适配的旧的接口；Target 类提供给使用者，属性引用Adaptee类，request 是新的接口；Client 是使用者，属性引入 Target
+
+![设计模式-适配器uml类图](C:/Users/wangtongmeng/Desktop/Blog/js/img/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E9%80%82%E9%85%8D%E5%99%A8uml%E7%B1%BB%E5%9B%BE.png)
+
+**代码演示**
+
+```js
+class Adaptee {
+  specificRequest () {
+    return '德国标准插头'
+  }
+}
+
+class Target {
+  constructor () {
+    this.Adaptee = new Adaptee()
+  }
+  request () {
+    let info = this.Adaptee.specificRequest()
+    return `${info} - 转换器 - 中国标准插头`
+  }
+}
+
+// 测试
+let target = new Target()
+let res = target.request()
+console.log(res)
+
+
+```
+
 ### 适配器模式-场景(封装旧接口&Vue的computed)
+
+- 封装旧接口
+- vue computed
+
+**封装旧接口**
+
+![设计模式-装饰器-场景-ajax1](img/设计模式-装饰器-场景-ajax1.png)
+
+![设计模式-装饰器-场景-ajax2](img/设计模式-装饰器-场景-ajax2.png)
+
+![设计模式-装饰器-场景-vuecomputed](./img/设计模式-装饰器-场景-vuecomputed.png)
+
+**设计原则验证**
+
+- 将就接口和使用者进行分离
+- 符合开放封闭原则
 
 
 
