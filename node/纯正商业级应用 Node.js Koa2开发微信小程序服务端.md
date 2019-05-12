@@ -230,7 +230,194 @@ app.use(async (ctx, next) => {
 
 next() 返回的是 promise
 
+```js
+const Koa = require('koa')
+
+const app = new Koa()
+app.use((ctx, next) => {
+	const a = next()
+	console.log(a)
+})
+app.use((ctx, next) => {
+	next()
+	return 'abc'
+  // reutrn new Promise()
+})
+
+app.listen(3000)
+// 命令行 node app.js，启动 node 服务
+// 浏览器请求 localhost:3000 时
+// 终端中打印，
+// Promise { 'abc' }
+
+```
+
 ### 2-8 深入理解 async 和 await
+
+- await 的作用
+  - 对表达式求值
+  - 阻塞当前线程
+- async 后的函数返回值是 Promise
+- 面试题：中间件为什么要加上 async ?
+
+**await 的作用**
+
+1.对表达式求值
+
+await 后面可以跟任意表达式不只是 Promise，即可以对表达式求值。
+
+next() 返回的是 Promise，通过 await 的求值特性，可以直接得到值
+
+```js
+const Koa = require('koa')
+
+const app = new Koa()
+
+app.use(async (ctx, next) => {
+	const a = await next()
+	// await 1. 求值关键字 表达式
+	console.log(a)
+	// a.then( res => {
+	// 	console.log(res)
+	// })
+})
+app.use((ctx, next) => {
+	next()
+	return 'abc'
+})
+
+app.listen(3000)
+// 通过 await 直接拿到值 'abc'
+```
+
+2.阻塞当前线程
+
+使用 await 会阻塞当前线程，等待异步结果的返回；这样就把异步调用变成同步操作了。
+
+- 不使用 await
+  - axios 不阻塞线程，end - start 结果接近于零
+- 使用 await （必须配合 async）
+  - 阻塞线程，end - start 很大
+
+```js
+const Koa = require('koa')
+
+const app = new Koa()
+
+app.use(async (ctx, next) => {
+	const axios = require('axios')
+	const start = Date.now()
+	const res = await axios.get('http://7yue.pro')
+	const end = Date.now()
+	console.log(end - start)
+	next()
+	// return 'abc'
+})
+
+app.listen(3000)
+```
+
+这样，我们就可以直接使用 await 的两个特性，拿到请求结果，而不是 Promise
+
+```js
+app.use(async (ctx, next) => {
+	const axios = require('axios')
+	const res = await axios.get('http://7yue.pro')
+	console.log(res) // 数据，而不是 Promise
+})
+```
+
+await 只会阻塞当前线程，不会阻塞其他线程**。**
+
+**async 后的函数返回值是 Promise**
+
+async 后面跟函数，函数的任何返回值都会被包装成 Promise
+
+```js
+async function f1 () {
+  return 'hello'
+}
+// node 此文件，执行
+console.log(f1()) // Promise { 'hello' }
+```
+
+**面试题：中间件为什么要加上 async ?**
+
+中间件函数加不加 async 都会返回 Promise, Koa 在内部已经处理了。之所以加 async 是因为在函数内部引用了 await，如果不加 async 就会报错。
+
+异步的终极解决方案，async 和 await 的语法，最早出现在 C# 中。
+
+### 为什么一定要保证洋葱模型？
+
+当我们需要等后续中间件都完成后再执行操作，就需要保证洋葱模型，例如计时。
+
+如果不加 async 和 await，koa 中间件的执行顺序就不一定按照洋葱模型的顺序执行。
+
+1-3-2-4 不是 1-3-4-2，遇到 await 线程被阻塞了，所以执行了 2，当线程阻塞取消后，才会执行，所以最后执行 4，无法保证按照洋葱模型的顺序执行。
+
+```js
+const Koa = require('koa')
+
+const app = new Koa()
+
+app.use(async (ctx, next) => { // 若不加，不能保证洋葱模型
+	console.log(1);
+	await next()
+	console.log(2);
+})
+app.use(async (ctx, next) => {
+	console.log(3);
+	const axios = require('axios')
+	const res = await axios.get('http://7yue.pro')
+	next()
+	console.log(4);
+	
+})
+
+app.listen(3000)
+
+```
+
+当需要拿到第二个中间件的返回结果时，必须保证第二个中间件已经执行完了。(不要通过返回值的形式获得，第三方中间件不能控制)。
+
+```js
+const Koa = require('koa')
+
+const app = new Koa()
+
+app.use(async (ctx, next) => {
+	await next()
+	const r = ctx.r
+	console.log(r)
+})
+app.use(async (ctx, next) => {
+	const axios = require('axios')
+	const res = await axios.get('http://7yue.pro')
+	ctx.r = res
+	next()
+})
+
+app.listen(3000)
+
+```
+
+## 第3章 路由系统的改造
+
+### 3-1 路由系统
+
+### 3-2 服务端编程必备思维：主题与模型划分
+
+### 3-3 多 Router 拆分路由
+
+### 3-4 ndoemon 自动重启 Server
+
+### 3-5 vscode + nodemon 调试配置
+
+### 3-6 requireDirectory 实现路由自动加载
+
+### 3-7 初始化管理器与 Process.cwd
+
+
 
 
 
