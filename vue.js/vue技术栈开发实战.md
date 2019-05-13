@@ -2486,3 +2486,34 @@ export default {
 2. 登录以及Token处理
 3. Token过期处理
 4. 退出登录
+
+### 后端代码概览
+
+安装两个包：`js-cookie` 和 `md5`
+
+`js-cookie`：对 cookie 进行操作，可以设置和读取。
+
+`md5`：对一个字符串进行 md5 加密，用于登录时提交密码。
+
+> index.js 是否已经登录设为 false，显示 login 页面, const HAS_LOGINED = false
+>
+> main.js 注释mock, *// if (process.env.NODE_ENV !== 'production') require('./mock')*
+>
+> 由于后端没有设置header 进行跨域，需要在前端设置代理
+>
+> devServer: {
+>
+> ​    proxy: 'http://localhost:3000'
+>
+>   }
+>
+> *若设置了代理，这里的开发环境域名可以设为 ''*
+>
+> export const baseURL = process.env.NODE_ENV === 'production' ? 'http://production.com' : ''
+>
+> 由于修改了 webpack 配置，需重启
+
+
+
+
+
