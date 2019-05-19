@@ -1106,7 +1106,7 @@ console.log('login1 === login2', login1 === login2)
 - UML 类图和演示
 - 经典使用场景
 
-## 适配器模式
+## 第 6 章 适配器模式
 
 将一个类的接口适配成用户所期待的，这就是适配器。替换老项目中jquery的$.ajax，vue中计算机属性computed的使用，都可以看作是适配器模式。
 
@@ -1168,6 +1168,248 @@ console.log(res)
 **设计原则验证**
 
 - 将就接口和使用者进行分离
+- 符合开放封闭原则
+
+## 第 7 章 装饰器模式
+
+装饰器模式属于结构型模式，它是作为现有的类的一个包装，允许向一个现有的对象添加新的功能，同时又不改变其结构。本章同样介绍概念、UML。同时使用了丰富/实用的场景示例，包括ES7装饰器、core-decorators模块等
+
+### 7-1 装饰器模式-介绍
+
+- 为对象添加新功能
+- 不改变其原有的结构和功能
+
+手机壳
+
+uml 类图
+
+![设计模式-适配器uml类图](img/设计模式-适配器uml类图.png)
+
+代码演示
+
+```js
+class Circle {
+  draw () {
+    console.log('画一个圆形')
+  }
+}
+
+class Decorator {
+  constructor (circle) {
+    this.circle = circle
+  }
+  draw () {
+    this.circle.draw()
+    this.setRedBorder(circle)
+  }
+  setRedBorder (circle) {
+    console.log('设置红色边框')
+  }
+}
+
+// 测试代码
+let circle = new Circle()
+circle.draw()
+console.log('---分割线---')
+let dec = new Decorator(circle)
+dec.draw()
+```
+
+### 7-2 装饰器模式-场景1
+
+ES7 装饰器
+
+- 配置环境
+- 装饰类
+- 装饰方法
+
+**配置环境**
+
+命令行安装 babel 插件
+
+```shell
+npm install babel-plugin-transform-decorators-legacy --save-dev
+```
+
+在 .babelrc 中注册插件
+
+```js
+{
+  //
+  "plugins": ["transform-decorators-legacy"] 
+}
+```
+装饰类
+
+`@testDec` 写在 Demo上方，意思是 testDec 是基于 Demo 类的装饰器
+
+```js
+// 一个简单的 demo
+@testDec
+class Demo {
+
+}
+function testDec(target) {
+  target.isDec = true
+}
+alert(Demo.isDec) // true
+```
+
+装饰器原理
+
+```js
+@decorator
+class A {}
+// 等同于
+class A {}
+A = decorator(A) || A
+```
+
+装饰类 - 传参示例
+
+```js
+// 可以加参数
+function testDec (isDec) {
+  return function (target) {
+    target.isDec = isDec
+  }
+}
+
+@testDec(true)
+class Demo {
+  //
+}
+alert(Demo.isDec) // true
+```
+
+装饰类 - mixin 示例
+
+```js
+function mixins (...list) {
+  return function (target) {
+    Object.assign(target.prototype, ...list)
+  }
+}
+
+const Foo = {
+  foo () {
+    alert('foo')
+  }
+}
+
+@mixins(Foo)
+class MyClass {
+
+}
+
+let obj = new MyClass()
+obj.foo() // foo
+```
+
+装饰方法 - 例1
+
+```js
+function readonly (target, name, descriptor) {
+  descriptor.writable = false
+  return descriptor
+}
+
+class Person {
+  constructor () {
+    this.first = 'A'
+    this.last = 'B'
+  }
+  
+  // 装饰方法
+  @readonly
+  name () { return `${this.first} ${this.last}`}
+}
+
+var p = new Person()
+console.log(p.name())
+// p.name = function () {} // 报错，因为 name 是只读属性
+```
+
+readonly 实现原理
+
+```js
+function readonly (target, name, descriptor) {
+  // descriptor 属性描述对象(Object.defineProperty 中会用到), 原来的值如下：
+  // {
+	// 		value: specifiedFunction,
+  //		enumerable: false,
+  //		configurable: true,
+  //		writable: true
+  // }
+  descriptor.writable = false
+  return descriptor
+}
+```
+
+装饰方法 - 例 2
+
+```js
+class Math {
+  // 装饰方法
+  @log
+  add(a, b) {
+    return a + b
+  }
+}
+
+const math = new Math()
+const result = math.add(2, 4) // 执行 add 时，会自动打印日志，因为有 @log 装饰器
+console.log('result', result)
+```
+
+log 实现原理
+
+```js
+function log (taget, name, descriptor) {
+  var oldValue = 	descriptor.value
+  
+  descriptor.value = function () {
+    console.log(`Calling ${name} with`, arguments)
+    return oldValue.apply(this, arguments)
+  }
+  
+  return descriptor
+}
+```
+
+### 7-3 装饰器模式-场景2(装饰类和方法)
+
+### 7-4 装饰器模式-场景3和总结
+
+core-decorators
+
+- 第三方开源 lib
+- 提供常用的装饰器
+- 查阅文档：github.com/jayphelps/core-decorators
+
+```js
+// 安装 npm i core-decorators --save
+
+// 开始编码：
+import { readonly } from 'core-decorators'
+
+class Person {
+  @readonly
+  name () {
+		return 'zhang'
+  }
+}
+
+let p = new Person()
+alert(p.name())
+// p.name = function () { /*...*/ } // 报错
+```
+
+![设计模式-装饰器库例子](img/设计模式-装饰器库例子.png)
+
+**设计原则验证**
+
+- 将现有对象和装饰器进行分离，两者独立存在
 - 符合开放封闭原则
 
 
