@@ -1,3 +1,5 @@
+
+
 # js 设计模式
 
 ## 导学
@@ -1412,5 +1414,90 @@ alert(p.name())
 - 将现有对象和装饰器进行分离，两者独立存在
 - 符合开放封闭原则
 
+## 第8章 代理模式
 
+为其他对象提供一种代理以控制对这个对象的访问。网络代理，明星/经纪人的场景恰如其分
+
+### 8-1 代理模式-介绍和演示
+
+- 使用者无权访问目标对象
+- 中间加代理，通过代理做授权和控制
+
+实例
+
+- 科学上网
+- 明星经纪人
+
+![1558365086625](C:\Users\wangtongmeng\AppData\Roaming\Typora\typora-user-images\1558365086625.png)
+
+```js
+class ReadImg {
+  constructor (fileName) {
+    this.fileName = fileName
+    this.loadFromDisk() // 初始化即从硬盘中加载，模拟
+  }
+  display () {
+    console.log('display... ' + this.fileName)
+  }
+  loadFromDisk () {
+    console.log('loading... ' + this.fileName)
+  }
+}
+
+class ProxyImg {
+  constructor (fileName) {
+    this.readImg = new ReadImg(fileName)
+  }
+  display () {
+    this.readImg.display()
+  }
+}
+
+// 测试
+let proxyImg = new ProxyImg('1.png')
+proxyImg.display()
+```
+
+### 8-2 代理模式-场景1(事件代理和jq的proxy)
+
+场景
+
+1. 网页事件代理
+2. jQuery $.proxy
+3. ES6 Proxy
+
+网页事件代理
+
+![1558366175378](img/设计模式-代理-网页代理.png)
+
+代理 this
+
+![1558366204264](img/设计模式-代理-this.png)
+
+$.proxy 代理 this
+
+![1558394332218](img/设计模式-代理-$proxy.png)
+
+### 8-3 代理模式-场景2(明星经纪人)
+
+es6 Proxy
+
+![1558394436561](img/设计模式-代理-es6proxy.png)
+
+设计原则验证
+
+- 代理类和目标类分离，隔离开目标类和使用者
+- 符合开放封闭原则
+
+### 8-4 代理&适配器&装饰模式对比
+
+代理模式 vs 适配器模式
+
+- 适配器模式：提供一个不同的接口(如不同版本的插头)
+- 代理模式：提供一模一样的接口
+
+代理模式 vs 装饰器模式
+
+- 装饰器模式：扩展功能，原有功能不变且可直接使用
+- 代理模式：显示原有功能，但是经过限制或阉割之后的
 
