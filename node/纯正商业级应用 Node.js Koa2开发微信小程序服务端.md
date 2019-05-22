@@ -405,9 +405,55 @@ app.listen(3000)
 
 ### 3-1 路由系统
 
+使用 koa-router 来做路由管理，通过 koa-router 做路由管理，比直接在中间件内 if 判断要高级。访问 3000端口，对应路由，客户端可以拿到对应数据。
+
+```js
+// app.js
+const Koa = require('koa')
+const Router = require('koa-router')
+
+const app = new Koa()
+const router= new Router() // 第一步，实例化 router
+
+// 中间件都必须通过 app.use 注册；但这里第二个参数也是中间件，是 koa-router 内部自动注册的中间件，所以可以拿到 ctx 和 next 参数
+router.get('/classic/latest', (ctx, next) => { // 第二步，添加处理逻辑
+	ctx.body = { key: 'classic' }
+})
+
+app.use(router.routes()) // 第三部，注册 routes
+
+// app.use(async (ctx, next) => {
+// 	console.log(ctx.path)
+// 	console.log(ctx.method)
+// 	if (ctx.path === '/classic/latest' && ctx.method === 'GET') { // 这里，ctx 是 Request 的别名
+// 		ctx.body = { key: 'classic' } // 通过给 body 赋值，来给客户端返回数据
+// 	}
+// })
+
+
+app.listen(3000)
+
+```
+
 ### 3-2 服务端编程必备思维：主题与模型划分
 
+好的代码利用阅读、维护，能提高编程效率。
+
+主题划分的好，设计好数据库建表；主题的划分是渐进式的。这里划分成 3 个部分： 期刊、书籍、点赞。
+
 ### 3-3 多 Router 拆分路由
+
+路由的版本管理，要保证开闭原则，修改关闭，扩展开放。
+
+客户端要保证 api 版本的兼容性，通常支持 3 个版本，v1、v2、v3。
+
+api 携带版本号的方式：
+
+- 路径
+- 查询参数
+- header
+
+尽量保持高阶模块调用低阶模块，不要反过来，以免造成循环引用的问题。例如主入口文件 app.js，可以调用其他模块，但不要在低阶模块中调用 app.js
 
 ### 3-4 ndoemon 自动重启 Server
 
