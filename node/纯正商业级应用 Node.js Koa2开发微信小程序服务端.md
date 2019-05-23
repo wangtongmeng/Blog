@@ -453,13 +453,130 @@ api 携带版本号的方式：
 - 查询参数
 - header
 
-尽量保持高阶模块调用低阶模块，不要反过来，以免造成循环引用的问题。例如主入口文件 app.js，可以调用其他模块，但不要在低阶模块中调用 app.js
+尽量保持高阶模块调用低阶模块，不要反过来，以免造成循环引用的问题。例如主入口文件 app.js，可以调用其他模块，但不要在低阶模块中调用 app.js。
 
-### 3-4 ndoemon 自动重启 Server
+**拆分路由**
+
+在根目录新建文件夹 api/v1/，创建 book.js 和 classic.js 两个路由文件。通过 koa-router 定义路由，并在 app.js 中引入。
+
+定义路由
+
+```js
+// book.js
+const Router = require('koa-router')
+const router= new Router() 
+
+router.get('/v1/book/latest', (ctx, next) => {
+	ctx.body = { key: 'book' }
+})
+
+module.exports = router
+```
+
+```js
+// classic.js
+const Router = require('koa-router')
+const router= new Router() 
+
+
+router.get('/v1/classic/latest', (ctx, next) => {
+	ctx.body = { key: 'classic' }
+})
+
+module.exports = router
+```
+
+在 app.js 中引入定义好的路由，并通过 routes 方法注册路由。
+
+```js
+const Koa = require('koa')
+const book = require('./api/v1/book')
+const classic = require('./api/v1/classic')
+
+const app = new Koa()
+
+
+app.use(book.routes())
+app.use(classic.routes())
+
+app.listen(3000)
+```
+
+麻烦：每定义一个路由，都需要注册，很麻烦。
+
+### 3-4 nodemon 自动重启 Server
+
+**在 vscode 中进行断点调试**
+
+打上断点，按 F5
+
+**自动重启和代码调试配合使用的配置**
+
+安装 nodemon
+
+```shell
+npm i nodemon -g
+```
+
+使用 nodemon
+
+```js
+nodemon app.js
+```
+
+如果不想在全局安装，而在项目中安装，并想在命令行中使用的话，1.使用 npx 运行，2.使用package.json中的script脚本。
+
+**为 vscode 添加一个启动配置文件**
+
+点击小爬虫，添加配置，选择 node.js 环境，就会在根目录生成配置文件。
+
+添加配置，适合当前文件的断点调试。当我们选择小爬虫，并通过选项选择当前文件的配置，选择一个 js 文件打上断点后，点击启动或 f5, 就能在当前文件中进行断点调试了。
+
+```js
+{
+  "version": "0.2.0",
+  "configurations": [
+
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Launch Program",
+      "program": "${workspaceFolder}\\app.js"
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "当前文件",
+      "program": "${file}" // 当前文件为启动入口
+    }
+  ]
+}
+```
+
+
 
 ### 3-5 vscode + nodemon 调试配置
 
+在 launch.json 中添加配置，选择 node.js: nodemon 安装程序，添加。这样当我们打断点调试时，既能重启 app.js，又能进行断点调试了。
+
+```json
+{
+  "type": "node",
+  "request": "launch",
+  "name": "nodemon",
+  "runtimeExecutable": "nodemon",
+  "program": "${workspaceFolder}/app.js",
+  "restart": true,
+  "console": "integratedTerminal",
+  "internalConsoleOptions": "neverOpen"
+}
+```
+
+在 app.js 中 打断点；点击小爬虫，选择 nodemen，既自动重启，又可以断点调试。
+
 ### 3-6 requireDirectory 实现路由自动加载
+
+自动加载某个目录下的所有模块，可以通过 `require-directory` 包实现。
 
 ### 3-7 初始化管理器与 Process.cwd
 
