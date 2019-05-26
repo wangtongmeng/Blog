@@ -457,7 +457,7 @@ api 携带版本号的方式：
 
 **拆分路由**
 
-在根目录新建文件夹 api/v1/，创建 book.js 和 classic.js 两个路由文件。通过 koa-router 定义路由，并在 app.js 中引入。
+在根目录新建文件夹 app/api/v1/，创建 book.js 和 classic.js 两个路由文件。通过 koa-router 定义路由，并在 app.js 中引入。
 
 定义路由
 
@@ -578,9 +578,146 @@ nodemon app.js
 
 自动加载某个目录下的所有模块，可以通过 `require-directory` 包实现。
 
+```js
+const Koa = require('koa')
+const requireDirectory = require('require-directory')
+const Router =require('koa-router')
+
+const app = new Koa()
+
+requireDirectory(module, '.app/api', {
+	visit: whenLoadModule
+})
+
+function whenLoadModule (obj) {
+	if (obj instanceof Router) {
+		app.use(obj.routes()) 
+	}
+}
+
+app.listen(3000)
+```
+
+api 文件夹中的一个路由文件
+
+```js
+// classic.js
+const Router = require('koa-router')
+const router= new Router() 
+
+
+router.get('/v1/classic/latest', (ctx, next) => {
+	ctx.body = { key: 'classic' }
+})
+
+module.exports = router
+```
+
 ### 3-7 初始化管理器与 Process.cwd
 
+在根目录新建目录 core/，一些公共的方法或类写在这里面。
 
+新建 core/init.js，把 app.js 中路由管理的代码摘出来。初始化管理器，管理路由。
+
+```js
+// core/init.js
+const requireDirectory = require('require-directory')
+const Router = require('koa-router')
+
+
+class InitManager {
+  static initCore (app) {
+    // 入口方法
+    InitManager.app = app
+    InitManager.initLoadRouters()
+  }
+  static initLoadRouters () {
+    // 1. path config 引入
+    // 2. 绝对路径 
+    const apiDirectory = `${process.cwd()}/app/api`
+    requireDirectory(module, apiDirectory, {
+      visit: whenLoadModule
+    })
+    
+    function whenLoadModule (obj) {
+      if (obj instanceof Router) {
+        InitManager.app.use(obj.routes()) 
+      }
+    }
+  }
+}
+
+module.exports = InitManager
+```
+
+```js
+// app.js
+const Koa = require('koa')
+
+const InitManager = require('./core/init')
+
+const app = new Koa()
+InitManager.initCore(app)
+
+
+app.listen(3000)
+```
+
+process.cwd() 获得绝对路径
+
+process.cwd() 获得绝对路径，打断点查看路径，选中 `process.cwd()` 右键选择`调试：求值`就能看到根目录的绝对路径了`C:\Users\wangtongmeng\Desktop\front-end-practice\node.js\island"` 。
+
+```js
+const requireDirectory = require('require-directory')
+const Router = require('koa-router')
+
+
+class InitManager {
+  static initCore (app) {
+    // 入口方法
+    InitManager.app = app
+    InitManager.initLoadRouters()
+  }
+  static initLoadRouters () {
+    // 1. path config 引入
+    // 2. 绝对路径 
+    const apiDirectory = `${process.cwd()}/app/api`
+    requireDirectory(module, apiDirectory, {
+      visit: whenLoadModule
+    })
+    
+    function whenLoadModule (obj) {
+      if (obj instanceof Router) {
+        InitManager.app.use(obj.routes()) 
+      }
+    }
+  }
+}
+
+module.exports = InitManager
+```
+
+## 第4章 异步异常与全局异常处理
+
+### 4-1 参数获取与LinValidator校验器
+
+前端向后端传参的四种方式：url路径中、查询参数中、http header、http body
+
+
+
+### 4-2 异常理论与异常链
+
+### 4-3 异步异常处理方案
+
+### 4-4 全局异常处理中间件编写
+
+### 4-5 已知错误与未知错误
+
+### 4-6 定义异常返回格式
+
+### 4-7 定义HttpException异常基类
+
+### 4-8 特定异常类与global全局变量
 
 
 
