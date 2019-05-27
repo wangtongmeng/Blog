@@ -2513,7 +2513,9 @@ export default {
 >
 > 由于修改了 webpack 配置，需重启
 
+结合业务的方法，封装在 util.js 中
 
+逻辑上的操作都放在组件里
 
-
+这套方案适合对安全性不是很高的情况。对于安全性较高的方案，不能通过 js 取到 token 放到 cookie 中再根据 cookie 进行逻辑判断了。需要在 服务端开启 http only 通过设置 http only 为 true，通过服务端把 token 设置到 cookie 中，这样无法通过 js 脚本读取和操作 cookie 的，在一定程度上，避免跨站脚本攻击。
 
