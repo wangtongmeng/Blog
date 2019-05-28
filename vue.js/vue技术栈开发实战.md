@@ -2519,3 +2519,17 @@ export default {
 
 这套方案适合对安全性不是很高的情况。对于安全性较高的方案，不能通过 js 取到 token 放到 cookie 中再根据 cookie 进行逻辑判断了。需要在 服务端开启 http only 通过设置 http only 为 true，通过服务端把 token 设置到 cookie 中，这样无法通过 js 脚本读取和操作 cookie 的，在一定程度上，避免跨站脚本攻击。
 
+## **Vue技术栈开发实战-响应式布局**
+
+1. Vue-cli3.0中使用**iView**(全局引入/按需引入，看文档)
+2. 布局组件的使用
+3. 栅格组件实现响应式布局
+
+icon 没有click事件，需要使用 .native 给 Icon 组件最外层的html标签绑定 一个原生的 click 事件
+
+在 vscode 中 `<Col></Col>`无法自动不全，可以这样写`<i-col></i-col>`
+
+通过 layout 和 栅格组件实现响应式布局。
+
+
+
