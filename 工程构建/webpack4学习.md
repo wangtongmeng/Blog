@@ -118,7 +118,30 @@ npx webpack --config webpackconfig.js
 
 ## 第 3 章 Webpack 的核心概念
 
+本章讲解 Webpack 中的一些核心概念，从 Loader 与 Plugin 开始，带你学明白 Webpack 的运行机制，然后逐步深入，扩展衍生出 SoureMap， HMR， WDS 等常见概念。本章课程学习过程中，额外增加了对 Webpack 官方文档的查阅方式讲解，帮助大家学会查阅文档。...
+
 ### 3-1 什么是loader
+
+webpack 是什么？模块打包工具
+
+模块是什么？不只是js、css和图片等其他任何内容。
+
+webpack配置文件的作用是什么？答案在前面
+
+使用 file-loader 做 jpg 文件的打包
+
+打包流程：
+
+- 命令行 `npm run bundle`，执行 package.json  中的 script ，运行 bundle 命令，实际上是运行 webpack。
+- webpack 找它的配置，根据配置打包。
+  - 遇到 js文件，默认可以处理 js文件。
+  - 当遇到 jpg 图片文件，webpack 默认不知道如何打包，会去配置中找相应规则
+
+### 3-2 使用 Loader 打包静态资源（图片篇）
+
+
+
+
 
 
 
