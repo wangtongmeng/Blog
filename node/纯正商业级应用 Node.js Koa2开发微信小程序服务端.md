@@ -557,7 +557,7 @@ nodemon app.js
 
 ### 3-5 vscode + nodemon 调试配置
 
-在 launch.json 中添加配置，选择 node.js: nodemon 安装程序，添加。这样当我们打断点调试时，既能重启 app.js，又能进行断点调试了。
+在 launch.json 中添加配置，选择 `node.js: nodemon 安装程序`，添加。这样当我们打断点调试时，既能重启 app.js，又能进行断点调试了。
 
 ```json
 {
@@ -703,7 +703,27 @@ module.exports = InitManager
 
 前端向后端传参的四种方式：url路径中、查询参数中、http header、http body
 
+通过 koa-bodyparser 获取 body 信息，koa-bodyparser 是中间件，所以需要注册
 
+```js
+// app.js
+const parser = require('koa-bodyparser')
+const app = new Koa()
+app.use(parser()) // parser 不是中间件，调用它才是
+```
+
+获取参数
+
+校验参数，若不对通知客户端参数不正确、参数必填项、email提示、手机号规则的校验；若通过if判断写在api导致代码复杂，或者完全不校验参数，导致写入数据库时频繁报错，引起数据库性能问题。
+
+校验两个层面的意义
+
+- 防止非法参数
+- 给客户端明确的提示
+
+其他语言现成的校验层，TP5，Python 的 WTForms
+
+LinValidator 基本实现了 WTForms 所有的功能。
 
 ### 4-2 异常理论与异常链
 
