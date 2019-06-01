@@ -1501,3 +1501,36 @@ es6 Proxy
 - 装饰器模式：扩展功能，原有功能不变且可直接使用
 - 代理模式：显示原有功能，但是经过限制或阉割之后的
 
+## 第9章 外观模式
+
+本章讲解外观模式，讲解其概念、示例
+
+### 9-1 外观模式
+
+介绍
+
+- 为子系统中的一组接口提供了一个高层接口
+- 使用者使用这个高层接口
+
+![设计模式-外观模式uml类图](img/设计模式-外观模式uml类图.png)
+
+场景
+
+```js
+function bindEvent(elem, type, selector, fn) {
+  if (fn == null) {
+    fn = selector
+    selector = null
+  }
+  // 
+}
+
+// 调用
+bindEvent(elem, 'click', '#div1', fn)
+bindEvent(elem, 'click', fn)
+```
+
+设计原则验证
+
+- 不符合单一职责和开放封闭原则，因此谨慎使用，不可滥用
+
