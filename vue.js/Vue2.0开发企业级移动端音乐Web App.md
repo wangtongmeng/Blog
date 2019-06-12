@@ -46,5 +46,9 @@ vue init webpack vue-music
 
 当请求数据没返回时，通过 v-if 控制组件渲染的时机，避免莫名其妙的错误
 
+keep-alive 优化
+
+组件销毁时，clearTimeout 利用内存释放
+
 
 
