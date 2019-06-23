@@ -139,6 +139,51 @@ webpack配置文件的作用是什么？答案在前面
 
 ### 3-2 使用 Loader 打包静态资源（图片篇）
 
+使用 file-loader
+
+- 图片名 + hash，通过占位符实现
+- 更改输出位置
+- 支持多种格式文件
+
+```js
+webpack.config.js
+module: {
+		rules: [{
+		+ test: /\.(jpg|png|gif)$/,           // 支持多种格式文件
+			use: {
+				loader: 'file-loader',
+				options: {
+			+	name: '[name]_[hash].[ext]',    // 图片名 + hash
+			+	outputPath: 'images/'           // 更改输出位置
+				}
+			} 
+		}]
+	},
+```
+
+url-loader 可以实现 file-loader 的一切功能。
+
+url-loader 默认会把图片转换成base64格式，直接放入 bundle.js 中，而不是单独生成一个图像文件，需要配置文件小就base64，文件大还是单独存放，通过 limit 选项 2048，表示200个字节，204800表示200kb。
+
+- 图片文件小转成 base64，图片文件大打包成图片名+hash。
+
+```js
+webpack.config.js
+module: {
+		rules: [{
+			test: /\.(jpg|png|gif)$/,       
+			use: {
+				loader: 'url-loader',            // 使用 url-loader
+				options: {
+					name: '[name]_[hash].[ext]',    
+					outputPath: 'images/',    
+				+	limit: 10240                   // 以 10kb 为限
+				}
+			} 
+		}]
+	},
+```
+
 
 
 
