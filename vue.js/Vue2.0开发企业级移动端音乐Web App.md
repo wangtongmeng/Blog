@@ -42,7 +42,13 @@ vue init webpack vue-music
 
 ### 项目目录介绍及图标字体、公共样式等资源准备
 
+# 第 4 章
 
+当请求数据没返回时，通过 v-if 控制组件渲染的时机，避免莫名其妙的错误
+
+keep-alive 优化
+
+组件销毁时，clearTimeout 利用内存释放
 
 
 
