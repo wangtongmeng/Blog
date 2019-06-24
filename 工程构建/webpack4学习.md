@@ -173,6 +173,7 @@ module: {
 		rules: [{
 			test: /\.(jpg|png|gif)$/,       
 			use: {
+        
 				loader: 'url-loader',            // 使用 url-loader
 				options: {
 					name: '[name]_[hash].[ext]',    
@@ -184,7 +185,38 @@ module: {
 	},
 ```
 
+###  3-3 使用 Loader 打包静态资源（样式篇 - 上）
 
+安装 loader 
+
+```shell
+npm install style-loader css-loader -D
+```
+
+css-loader 会分析出几个 css 文件之间的关系，最终合并成一段 css。
+
+style-loader 会把 css-loader 生成的内容挂载到页面的 head 部分。
+
+sass-loader 把预处理器语言转化成 css。
+
+loader 执行顺序：从下到上，从右到左。
+
+css3 的厂商前缀，安装 postcss-loader。
+
+postcss-loader 需要用到 autoprefixer 插件
+
+```shell
+npm install autoprefixer -D
+```
+
+```json
+// postcss.config.js
+module.exports = {
+  plugins: [
+  	require('autoprefixer')
+  ]
+}
+```
 
 
 
