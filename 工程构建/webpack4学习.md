@@ -218,7 +218,43 @@ module.exports = {
 }
 ```
 
+### 3-4 使用 Loader 打包静态资源 (样式篇 - 下)
 
+css-loader 常用配置项
+
+当需要配置 loader 时，需要写成对象的形式，`importLoaders: 2`的作用是保证我们不管是在js 还是 css 中引入 scss 文件都可以保证打包成功。
+
+```js
+{
+    test: /\.scss$/,
+    use: [
+        'style-loader',
+        {
+            loader: 'css-loader',
+            options: {
+                importLoaders: 2，
+                modules: true // css 模块化打包
+            }
+        },
+        'sass-loader',
+        'postcss-loader'
+    ]
+}
+```
+
+css 打包的模块化
+
+通过设置 css-loader 的 `modules: true ` 
+
+```js
+import style from './index.scss'
+
+var img = new Image()
+img.src = avatar
+img.classList.add(style.avatar) // css 模块化的使用
+```
+
+打包字体文件
 
 
 
