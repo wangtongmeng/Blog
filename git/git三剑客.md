@@ -44,4 +44,31 @@ git config --list --local
 git config --lsit --global
 git config --list --system
 ```
+清除设置
+```shell
+$ git config --unset --local user.name
+$ git config --unset --global user.name
+$ git config --unset --system user.name
+```
+## 04 | 创建第一个仓库并配置local用户信息
+
+建 Git 仓库
+
+两种场景：
+
+1.把已有的项目代码纳入 Git 管理
+
+```shell
+cd 项目代码所在文件夹
+git init
+```
+
+2.新建的项目直接用 Git 管理
+
+```shell
+cd 某个文件夹
+git init your_project #会在当前路径下创建和项目名同名的文件夹
+cd your_project
+```
+
 
