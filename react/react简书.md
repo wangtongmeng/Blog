@@ -1,7 +1,22 @@
 B站https://www.bilibili.com/video/av37028937/?p=1，里面有些笔记
+
+**课程内容**
+
+基础内容、环境搭建、基础语法、原理进阶、动画
+
+Redux、Redux进阶
+
+实战项目、环境搭建、Header、首页、详情页
+
+登录校验、上线
+
+**技术**
+
+create-react-app、组件化思维、JSX、开发调试工具、虚拟DOM、生命周期、React-transition-group、Redux、Antd、UI，容器组件、无状态组件、redux-thunk、redux-saga、Styled-components、Immutable.js、redux-immutable、axios
+
 ## 第 2 章 react 初探
 
-### react 简介
+### 2-1 react 简介
 
 - Facebook 推出
 - 2013年开源
@@ -12,9 +27,9 @@ B站https://www.bilibili.com/video/av37028937/?p=1，里面有些笔记
 
 **官网**：https://reactjs.org/
 
-**与 vue 的区别**：更加灵活，适合开发复杂度较高的项目
+**与 vue 的区别**：更加灵活，适合开发复杂度较高的项目;
 
-### 开发环境搭建
+### 2-2 开发环境搭建
 
 **使用方式**
 
@@ -33,6 +48,8 @@ npm install -g create-react-app
 
 创建并启动项目
 
+shift+右键，选择在当前目录创建
+
 ```shell
 create-react-app my-app
 cd my-app
@@ -47,11 +64,23 @@ cd my-app
 npm start
 ```
 
-### 工程目录文件简介
+### 2-3 工程目录文件简介
 
-精简项目文件，只留下，index.html、index.js、App.js
+精简项目文件，主要是public目录和src目录，只留下
 
-### react 中的组件
+- index.html，模板文件
+
+- index.js，入口文件
+
+- App.js，根组件
+
+PWA progressive web application，通过写网页的形式写一些app应用
+
+**registerServiceWorker** 使我们能够以写网页的形式写app应用，写好后存储在https协议的服务器上，当用户断网后依然可以访问，因为 registerServiceWorker 把网页存储在了网页之内，也就是缓存了。不使用可以去掉。
+
+**public/mainfest.json**，是在使用pwa时，配置快捷方式图标用的。
+
+### 2-4 react 中的组件
 
 组件化思想：一个页面是有很多组件组成的。
 
@@ -59,7 +88,7 @@ npm start
 
 **定义一个组件**
 
-组件是通过类继承 React.Component 这个类来定义的
+组件是通过类继承 React.Component 这个类来定义的，组件显示的内容就是 render 函数最终返回的内容。
 
 ```js
 // App.js
@@ -79,6 +108,8 @@ export default App;
 ```
 
 **JSX 语法**
+
+ReactDOM 把 组件挂载到指定的dom节点上。
 
 ReactDOM.render() 的第一个参数传入的是`<App />`而不是 App，而`< />`这种形式就是 JSX 语法，**使用JSX 语法就必须引入 'react'**，否则报错。
 
@@ -110,7 +141,7 @@ class App extends Component {
 export default App;
 ```
 
-### React 中最基础的JSX语法
+### 2-5 React 中最基础的JSX语法
 
 **使用 h5 标签**
 
