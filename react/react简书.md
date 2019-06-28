@@ -177,7 +177,7 @@ ReactDOM.render(<App />, document.getElementById('root'));
 
 本章通过TodoList功能的实现，给大家完整介绍React的基础语法，设计理念以及围绕React展开的一些编程思维。
 
-### 使用React编写TodoList功能
+### 3-1 使用React编写TodoList功能
 
 - 在 index.js 中引入 TodoList 组件
 - 创建 TodoList 组件
@@ -222,7 +222,7 @@ class TodoList extends Component {
 export default TodoList
 ```
 
-### React 中的响应式设计思想和事件绑定
+### 3-2 React 中的响应式设计思想和事件绑定
 
 实现 input 框的响应式
 
@@ -275,8 +275,10 @@ export default TodoList
 ### 实现 TodoList 新增删除功能
 
 - 通过 ... 展开运算符，展开数组，结合添加数据，完成添加功能
-- 通过 bind 传入第二个参数 index ，完成定位要删除的数据
+- 通过 bind 传入额外的参数 index ，完成定位要删除的数据
 - 删除数据时，先复制原数组，完成删除操作，再通过 setState 覆盖原有数据。不要直接在原数据上操作，不利于 react 性能优化。
+
+- immutable，react 不允许直接修改 state，所以修改时需要拷贝一份出来进行修改；如果直接修改，做性能优化会有问题。
 
 ```js
 // TodoList.js
@@ -345,6 +347,25 @@ export default TodoList
 ```
 
 ### JSX语法细节补充
+
+- jsx注释
+- dangerouslySetInnerHTML属性
+- 样式用 className
+- label的for要用htmlFor
+
+在JSX代码中编写注释
+
+用className代替class作为类属性，避免属性class和构造函数类class冲突。
+
+内容不需要做转义时，利用dangerouslySetInnerHTML属性，也就有可能存在xss攻击的可能。外层{}，代表里面是js表达式，内层的{}其实就是一个js对象
+
+label在html中的作用是扩大点击区域，我们希望点击内容时，光标自动聚焦到输入框
+
+```jsx
+{/* 不用for，而用htmlFOr */}
+<label htmlFor="insertArea">输入内容</label>
+<input id="insertArea"></input>
+```
 
 ### 拆分组件与组件之间的传值
 

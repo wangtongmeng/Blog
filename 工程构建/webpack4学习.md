@@ -256,5 +256,19 @@ img.classList.add(style.avatar) // css 模块化的使用
 
 打包字体文件
 
+### 使用 plugins 让打包更便捷
 
+plugin 可以在webpack运行到某个时刻的时候，帮你做一些事情。
+
+
+
+html-webpack-plugin，会在打包后，自动生成一个html文件，并把打包生成的js自动引入到这个html文件中。
+
+配置模板文件 
+
+clean-webpack-plugin，每次打包前，先删除之前的包。它是第三方 Plugin，不是官方推荐。
+
+```shell
+npm install clean-webpack-plugin -D
+```
 
