@@ -355,9 +355,34 @@ export default TodoList
 
 在JSX代码中编写注释
 
+```jsx
+{/* input框 */}
+{
+   // input 框,单行注释需要换行
+}
+```
+
 用className代替class作为类属性，避免属性class和构造函数类class冲突。
 
+```jsx
+<input 
+  id="insertArea"
+  className='input' {/* clasName 代替 class */}
+  value={this.state.inputValue}
+  onChange={this.handleInputChange.bind(this)}
+ />
+```
+
 内容不需要做转义时，利用dangerouslySetInnerHTML属性，也就有可能存在xss攻击的可能。外层{}，代表里面是js表达式，内层的{}其实就是一个js对象
+
+```jsx
+<li
+  key={index}
+  onClick={this.handleItemDelete.bind(this, index)}
+  dangerouslySetInnerHTML={{__html: item}}
+>
+</li>
+```
 
 label在html中的作用是扩大点击区域，我们希望点击内容时，光标自动聚焦到输入框
 
@@ -369,6 +394,270 @@ label在html中的作用是扩大点击区域，我们希望点击内容时，�
 
 ### 拆分组件与组件之间的传值
 
+- 组件拆分
+- 父组件给子组件传值，既可以是值也可以是方法
+
+将TodoList.js 拆分子组件，拆除 TodoItem.js
+
+父组件给子组件传值，既可以是值也可以是方法。传递方法时需要绑定父组件的 this，方便在子组件中调用父组件的方法，修改数据。
+
+```jsx
+父组件传值
+{
+  this.state.list.map((item, index) => {
+    return (
+      <div>
+        <TodoItem 
+          content={item} 
+          index={index} 
+          deleteItem={this.handleItemDelete.bind(this)} 
+          />
+      </div>
+    )
+  })
+}
+```
+子组件通过this.props获取值或方法。子组件中调用自身方法时绑定this操作，最好放在constructor中进行，可以节约性能。
+```jsx
+子组件 TodoItem.js
+import React, { Component } from 'react'
+
+class TodoItem extends Component {
+
+  constructor(props) {
+    super(props)
+    this.handleClick = this.handleClick.bind(this); {/* 这样绑定this，比在render函数中绑定this性能高*/}
+  }
+
+  render() {
+    {/* return <div onClick={this.handleClick.bind(this)}>{this.props.content}</div> */}
+    return <div onClick={this.handleClick}>{this.props.content}</div>
+  }
+
+  handleClick() {
+    this.props.deleteItem(this.props.index)
+  }
+}
+
+export default TodoItem
+```
+
 ### TodoList 代码优化
+
+- 使用解构赋值获取props属性
+- 先引入组件，后引入样式
+- this指向的绑定，统一放在页面顶部
+- jsx中的过多逻辑，放到函数中去
+- setState 进行数据变更的新语法
+- 循环 key 值
+
+使用解构赋值获取props属性
+
+优化前
+
+```jsx
+handleClick() {
+  this.props.deleteItem(this.props.index)
+}
+```
+
+优化后
+
+```jsx
+handleClick() {
+  const { deleteItem, index } = this.props
+  deleteItem(index)
+}
+```
+
+先引入组件，后引入样式
+
+优化前
+
+```js
+import React, { Component, Fragment } from 'react'
+import './style.css'
+import TodoItem from  './TodoItem'
+```
+
+优化后
+
+```js
+import React, { Component, Fragment } from 'react'
+import TodoItem from  './TodoItem'
+import './style.css'
+```
+
+this指向的绑定，统一放在页面顶部
+
+this指向绑定写在render函数中会影响性能
+
+优化前
+
+```jsx
+<div>
+  <label htmlFor="insertArea">输入内容</label>
+  <input 
+    id="insertArea"
+    className='input'
+    value={this.state.inputValue}
+    onChange={this.handleInputChange.bind(this)}
+    />
+  <button onClick={this.handleBtnClick.bind(this)}>提交</button>
+</div>
+```
+
+优化后
+
+```jsx
+constructor (props) {
+    super(props)
+    this.handleInputChange = this.handleInputChange.bind(this)
+    this.handleBtnClick = this.handleBtnClick.bind(this)
+  }
+render() {
+  return (
+  <div>
+    <label htmlFor="insertArea">输入内容</label>
+    <input 
+      id="insertArea"
+      className='input'
+      value={this.state.inputValue}
+      onChange={this.handleInputChange}
+      />
+    <button onClick={this.handleBtnClick}>提交</button>
+</div>
+  )
+}
+```
+
+jsx中的过多逻辑，放到函数中去
+
+优化前
+
+```jsx
+render函数中
+<ul>
+  {
+    this.state.list.map((item, index) => {
+      return (
+        <div>
+          <TodoItem 
+            content={item} 
+            index={index} 
+            deleteItem={this.handleItemDelete} 
+            />
+        </div>
+      )
+    })
+  }
+</ul>
+```
+
+优化后
+
+```jsx
+render() {
+  return (
+    <Fragment>
+      <ul>
+        {this.getTodoItem()}
+      </ul>
+    </Fragment>
+  )
+}
+
+getTodoItem() {
+  return  this.state.list.map((item, index) => {
+    return (
+      <div>
+        <TodoItem 
+          content={item} 
+          index={index} 
+          deleteItem={this.handleItemDelete} 
+          />
+      </div>
+    )
+  })
+}
+```
+
+setState 进行数据变更的新语法
+
+以前setState 接收一个对象，现在可以接收函数
+
+setState 如果接收一个函数，它是异步的
+
+优化前
+
+```jsx
+ handleInputChange (event) {
+    this.setState({
+      inputValue: event.target.value
+    })
+  }
+```
+
+优化后
+
+setState 如果接收一个函数，它是异步的；e.target.value需要先存起来再赋值。
+
+```jsx
+handleInputChange (event) {
+  this.setState(() => {
+    const value = event.target.value
+    return {
+      inputValue: value
+    }
+  })  
+}
+
+es6进一步简写，返回一个对象
+handleInputChange (event) {
+  const value = event.target.value
+  this.setState(() => ({
+    inputValue: value
+  }))
+}
+
+```
+
+使用 prevState，避免修改state的状态
+
+```jsx
+ handleBtnClick () {
+    this.setState((prevState) => ({
+      list: [...prevState.list, prevState.inputValue],
+      inputValue: ''
+    }))
+  }
+```
+
+标准写法
+
+```jsx
+handleItemDelete (index) {
+    this.setState((preState) => {
+      const list = [...preState.list]
+      list.splice(index, 1)
+      return { list }
+    })
+  }
+```
+
+循环 key 值
+
+key 值要放在循环的最外层元素上，这里用index作为key值不严谨，会导致错误。
+
+```jsx
+return (
+  <TodoItem 
+    key={index}
+    content={item} 
+    index={index} 
+    deleteItem={this.handleItemDelete} 
+    />
+)
+```
 
 ### 围绕 React 衍生出的思考
