@@ -640,7 +640,7 @@ handleItemDelete (index) {
     this.setState((preState) => {
       const list = [...preState.list]
       list.splice(index, 1)
-      return { list }
+      return { li st }
     })
   }
 ```
@@ -661,3 +661,371 @@ return (
 ```
 
 ### 围绕 React 衍生出的思考
+
+- 声明式开发
+- 可以与其他框架并存，只负责指定dom的渲染，其他dom可由其他框架负责。
+- 组件化，形成组件树
+- 单向数据流，便于数据维护
+- 视图层框架，只关心页面渲染
+- 函数式编程，便于自动化测试
+
+## 第4章 React**高级内容**
+
+本章讲解React高级部分内容，包含PropTypes，生命周期函数，虚拟Dom，数据mock，动画实现等部分课程讲解。
+
+### 4-1 React developer tools 安装及使用
+
+安装chrom插件 React Developer Tools
+
+- 灰色 不是react开发的
+- -红色 react开发代码
+- 黑色 react线上版本(如，知乎)
+
+可以通过它实时监控组件state的变化，不需要console.log了
+
+### 4-2 PropTypes 与 DefaultProps 的应用
+
+PropTypes 校验父组件传入的prop，defaultProps 设置 prop 默认值
+
+<https://reactjs.org/docs/typechecking-with-proptypes.html>
+
+### 4-3 props，state 与 render 函数的关系
+
+当组件的state或props改变时，render函数会重新执行。
+
+当父组件的render函数被执行时，它的子组件的render都将被重新运行一次。
+
+### 4-4 React 中的虚拟DOM
+
+1. state数据 + jsx 模板 结合，生成虚拟DOM(虚拟dom就是一个js对象，用来描述真实dom)。
+2. 用虚拟dom生成真实DOM，显示页面。
+3. state发生变化
+4. state数据 + jsx 模板，生成新的虚拟dom（极大地提升了性能）
+5. 比较原虚拟dom和新虚拟dom的区别，找到变化的dom(极大提升性能)
+6. 操作dom，改变对应dom内容。
+
+vdom减少了对真实dom的创建以及真实dom的对比，取而代之的是js对象的对比，极大提高了性能。
+
+### 4-5 深入了解虚拟DOM
+
+jsx只是jsx模板语法
+
+jsx -> createElement -> 虚拟dom(js 对象 ) -> 真实dom
+
+createElement比jsx更底层
+
+```jsx
+// return <div><span>item</span></div>
+return React.createElement('div', {}, React.createElement('span', {}, 'item'))
+```
+
+虚拟dom的优点
+
+1. 性能提升了（虚拟dom比对代替真实dom比对）
+2. 它使跨端应用得以实现(虚拟dom可以被原生应用识别，vdom -> 原生组件)。
+
+### 4-6 虚拟 DOM 中的 Diff 算法
+
+- setState 底层性能优化，把多次setState结合成一次setState，减少虚拟dom比对次数
+- 虚拟dom，同层比对，如果一次比对不同，不会继续比对，用新的替换旧的
+- 循环为什么引入key值的概念，为了提高虚拟dom比对的性能，key值要保持稳定，尽量不用index。
+
+state发生变化,vdom对比
+
+只有调用setState，state才会发生变化。setState实际上是异步的，为了提高react底层的性能。
+
+若连续调用几次setState，且时间间隔很小，react会把多次setState合并成一个，只进行一次vdom比对，从而节省了性能。
+
+![1561858606889](C:\Users\wangtongmeng\AppData\Roaming\Typora\typora-user-images\1561858606889.png)
+
+diff算法，同级比较
+
+若第一层vdom不同，react不会继续比对，而是删掉这部分dom，重新生成这部分dom进行替换
+
+虽然可能会同时替换很多dom，但同级比对，算法简单，比对速度快，大大减少了vdom对比的性能消耗。
+
+![1561858844581](C:\Users\wangtongmeng\AppData\Roaming\Typora\typora-user-images\1561858844581.png)
+
+为什么循环，key值不要用 index，如果用 index 作为 key，就没办法保证原始虚拟dom和新虚拟dom上的key值保持一致了。
+
+![1561860546217](C:\Users\wangtongmeng\AppData\Roaming\Typora\typora-user-images\1561860546217.png)
+
+### 4-7 React 中 ref 的使用
+
+- ref 的使用
+- setState 与 ref 结合使用时的坑
+
+不使用ref，使用e.target 获取dom节点
+
+```jsx
+render() {
+  return (
+    <Fragment>
+      <input 
+        id="insertArea"
+        className='input'
+        value={this.state.inputValue}
+        onChange={this.handleInputChange}
+        />
+    </Fragment>
+  )
+}
+
+handleInputChange (event) {
+  const value = event.target.value
+  this.setState(() => ({
+    inputValue: value
+  }))
+}
+```
+
+使用ref，获取dom节点
+
+ref内接收一个函数，函数接收一个参数，参数为ref绑定的dom，并将this.input 指向指向此dom。
+
+```jsx
+render() {
+  return (
+    <Fragment>
+      <input 
+        id="insertArea"
+        className='input'
+        value={this.state.inputValue}
+        onChange={this.handleInputChange}
+        ref={(input) => {this.input = input}}
+        />
+    </Fragment>
+  )
+}
+
+handleInputChange () {
+    const value = this.input.value
+    this.setState(() => ({
+      inputValue: value
+    }))
+  }
+```
+
+setState 与 ref 结合使用时的坑
+
+setState 是异步函数，内部不会立即执行，所以之后如果有dom操作，需放到setState的回调函数中。
+
+```jsx
+render() {
+  return (
+    <Fragment>
+      <ul ref={(ul) => {this.ul = ul}}>
+        {this.getTodoItem()}
+      </ul>
+    </Fragment>
+  )
+}
+
+handleBtnClick () {
+  this.setState((prevState) => ({
+    list: [...prevState.list, prevState.inputValue],
+    inputValue: ''
+  }), () => {
+    console.log(this.ul.querySelectorAll('div').length)
+  })
+
+}
+```
+
+### 4-8 React 的生命周期函数
+
+生命周期函数指在某一个时刻组件会自动调用执行的函数。
+
+![1561885272948](C:\Users\wangtongmeng\AppData\Roaming\Typora\typora-user-images\1561885272948.png)
+
+初始化，是在constructor中初始化，设置 props 和 state。
+
+挂载（组件第一次挂载到页面的流程）
+
+- componentWillMount，在组件即将被挂载到页面的时刻自动执行。
+- render
+- componentDidMount，组件被挂载到页面之后，自动执行。
+
+更新
+
+- shouldComponentUpdate，组件被更新之前，自动执行。返回值为布尔值，决定组件是否被更新。
+- componentWillUpdate，组件被更新前，自动执行。它在shouldComponentUpdate之后，若shouldComponentUpdate返回true它才会执行，否则不执行。
+- render
+- componentDidUpdate
+- componentWillReceiveProps
+  - 一个组件要从父组件接收参数
+  - 若组件第一次存在于父组件中，不会执行
+  - 若这个组件之前已经存在于父组件中，才会执行
+- 卸载
+  - 当组件即将被从页面中剔除时执行。
+
+### 4-9 React 生命周期函数的使用场景
+
+- **性能提升**，shouldComponentUpdate 避免子组件不必要的render操作。
+- 约定异步请求放在 componentDidMount 中
+
+通过chrome插件，勾选highlight，设置渲染高亮。
+
+组件render函数执行
+
+- 父组件render函数执行
+- props 或 state发生变化时
+
+所以当父组件数据发生变化，render函数执行，子组件的render函数也必须执行，从而造成性能损耗。
+
+可以利用生命周期函数做性能优化
+
+```js
+shouldComponentUpdate(nextProps, nextState) {
+  if (nextProps.content !== this.props.content) {
+    return true
+  } else {
+    return false
+  }
+}
+```
+
+之前的性能提升做法
+
+函数指定this在constructor中做
+
+setState,react内置将多次合成一次来做，降低虚拟dom比对频率
+
+diff算法同级比对，提升vdom比对速度，提升react性能
+
+shouldComponentUpdate 提高子组件性能
+
+异步请求放在 componentDidMount 中
+
+异步请求需要放在只执行一次的生命周期函数中，如 componentWillMount，componentDidMount 中，但componentWillMount 可能会和rn、服务器端的同构等更高端的技术产生冲突。
+
+所以约定，异步请求放在componentDidMount 中
+
+### 4-10 使用Charles实现本地数据mock
+
+charles不行
+
+mock参考<https://juejin.im/post/5cc11f9c6fb9a0321437649a#heading-11>
+
+<https://blog.csdn.net/weixin_43863015/article/details/88911789>
+
+组件内，利用 axios 请求 '/api/todolist.json'
+
+在 pubulic/ 内，新建 api/todolist.json，模拟数据
+
+```js
+componentDidMount() {
+    axios.get('/api/todolist.json')
+      .then((res) => {
+        this.setState(() => ({
+          list: [...res.data]
+        }))
+      })
+      .catch(() => {alert('error')})
+  }
+```
+
+### 4-11 React 中实现 CSS 过渡动画
+
+通过切换元素不同class类，并结合 transition 实现过渡动画
+
+```js
+import React, { Component, Fragment } from 'react'
+import './style.css';
+
+class App extends Component {
+
+  constructor(props) {
+    super(props)
+    this.state = {
+      show: true
+    }
+    this.handleToggle = this.handleToggle.bind(this)
+  }
+
+  render() {
+    return (
+      <Fragment>
+        <div className={this.state.show ? 'show' : 'hide'}>hello</div>
+        <button onClick={this.handleToggle}>toggle</button>
+      </Fragment>
+      )
+  }
+
+  handleToggle() {
+    this.setState({
+      show: this.state.show ? false : true
+    })
+  }
+}
+
+export default App;
+```
+
+style.css
+
+```css
+.show {
+  opacity: 1;
+  transition: all 1s ease-in;
+}
+
+.hide {
+  opacity: 0;
+  transition: all 1s ease-in;
+}
+```
+
+### 4-12 React 中使用 CSS 动画效果
+
+forwards 保存keyframes最后一帧的样式
+
+style.css
+
+```css
+.show {
+  opacity: 1;
+  animation: show-item 2s ease-in forwards;
+}
+
+.hide {
+  opacity: 0;
+  animation: hide-item 2s ease-in forwards;
+}
+
+@keyframes show-item {
+  0% {
+    opacity: 0;
+    color: red
+  }
+  50% {
+    opacity: 0.5;
+    color: green;
+  }
+  100% {
+    opacity: 1;
+    color: blue;
+  }
+}
+
+@keyframes hide-item {
+   0% {
+     opacity: 1;
+     color: red
+   }
+   50% {
+     opacity: 0.5;
+     color: green;
+   }
+   100% {
+     opacity: 0;
+     color: blue;
+   }
+}
+```
+
+不管是 过渡还是动画，自己用可以实现一些简单动画效果，复杂的动画效果，还是需要借助动画框架。
+
+### 4-13 使用 react-transition-group 实现动画（1）
+
+### 4-14 使用 react-transition-group 的使用（2）
