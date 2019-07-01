@@ -12,6 +12,8 @@
     - 垂直居中-单行不换行居中
     -  垂直居中-多行整体居中
   - 垂直居中-块级元素
+    - 垂直居中-固定高的块级元素
+    - 垂直居中-高度未知的的块级元素
 
 - 水平垂直居中
 
@@ -99,5 +101,38 @@
 
 #### 垂直居中-行内元素--多行整体居中
 
-<p class="codepen" data-height="265" data-theme-id="0" data-default-tab="css,result" data-user="littlebirdflying" data-slug-hash="ZdrdWw" style="height: 265px; box-sizing: border-box; display: flex; align-items: center; justify-content: center; border: 2px solid; margin: 1em 0; padding: 1em;" data-pen-title="ZdrdWw">
+### 垂直居中-块级元素
+
+#### 垂直居中-固定高的块级元素
+
+对于高度固定的子块级元素
+
+```css
+.parent {
+  position: relative;
+}
+.child {
+  position: absolute;
+  top: 50%;
+  height: 100px;
+  margin-top: -50px; /* account for padding and border if not using box-sizing: border-box; */
+}
+```
+
+#### 垂直居中-高度未知的的块级元素
+
+```css
+.parent {
+  position: relative;
+}
+.child {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+}
+```
+
+
+
+
 
