@@ -1028,4 +1028,80 @@ style.css
 
 ### 4-13 使用 react-transition-group 实现动画（1）
 
+<https://github.com/reactjs/react-transition-group>
+
+使用 CSSTransition，它会自动的帮我们做class的增加和移除工作
+
+例如动画结束后移除元素或者通过js钩子函数操作样式，是之前实现不了的
+
+第一次出现就有动画效果
+
+```js
+import React, { Component, Fragment } from 'react'
+import { CSSTransition } from 'react-transition-group';
+import './style.css';
+
+class App extends Component {
+
+  constructor(props) {
+    super(props)
+    this.state = {
+      show: true
+    }
+    this.handleToggle = this.handleToggle.bind(this)
+  }
+
+  render() {
+    return (
+      <Fragment>
+        <CSSTransition
+          in={this.state.show} 控制出场入场动画
+          timeout={1000} 时长
+          classNames='fade' 动画名
+          unmountOnExit 动画完成后卸载元素
+          onEnter={(el) => {el.style.color='blue'}} 钩子函数
+          appear={true} 第一次加载元素时有动画
+        >
+          <div>hello</div>
+        </CSSTransition>
+        <button onClick={this.handleToggle}>toggle</button>
+      </Fragment>
+      )
+  }
+
+  handleToggle() {
+    this.setState({
+      show: this.state.show ? false : true
+    })
+  }
+}
+
+export default App;
+```
+style.css
+```css
+.fade-enter,.fade-appear {
+  opacity: 0;
+}
+.fade-enter-active, .fade-appear-active {
+  opacity: 1;
+  transition: opacity 1s ease-in;
+}
+.fade-enter-done {
+  opacity: 1;
+}
+.fade-exit {
+  opacity: 1;
+}
+.fade-exit-active {
+  opacity: 0;
+  transition: opacity 1s ease-in;
+}
+.fade-exit-done {
+  opacity: 0;
+}
+```
+
+Transition 组件比 CSSTransition 更底层，当 CSSTransition 解决不了时，可以看看 Transition 
+
 ### 4-14 使用 react-transition-group 的使用（2）
