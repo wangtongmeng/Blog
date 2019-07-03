@@ -1105,3 +1105,112 @@ style.css
 Transition 组件比 CSSTransition 更底层，当 CSSTransition 解决不了时，可以看看 Transition 
 
 ### 4-14 使用 react-transition-group 的使用（2）
+
+使用 TransitionGroup 实现多个元素的动画效果
+
+- 使用` <TransitionGroup>`包裹多个元素，内部通过`<CSSTransition>`控制具体元素的动画效果，不需要in属性。
+- 注意如果是循环产生的数据，key值需要写在最外层属性上。
+
+```js
+import React, { Component, Fragment } from 'react'
+import { CSSTransition, TransitionGroup } from 'react-transition-group';
+import './style.css';
+
+class App extends Component {
+
+  constructor(props) {
+    super(props)
+    this.state = {
+      show: true,
+      list: []
+    }
+    this.handleAddItem = this.handleAddItem.bind(this)
+  }
+
+  render() {
+    return (
+      <Fragment>
+        <TransitionGroup>
+        {
+          this.state.list.map((item, index) => {
+            return (
+              <CSSTransition
+                timeout={1000}
+                classNames='fade'
+                unmountOnExit
+                onEnter={(el) => {el.style.color='blue'}}
+                appear={true}
+                key={index}
+              >
+                <div >{item}</div>
+              </CSSTransition>
+            )
+          })
+        }
+        </TransitionGroup>
+        <button onClick={this.handleAddItem}>toggle</button>
+      </Fragment>
+      )
+  }
+
+  handleAddItem() {
+    this.setState((prevState) => {
+      return {
+        list: [...prevState.list, 'item']
+      }
+    })
+  }
+}
+
+export default App;
+```
+
+## 第5章 Redux入门
+
+本章主要讲解Redux产生背景，组成内容以及使用方式，通过实例带大家上手Redux数据管理框架的使用。
+
+### 5-1 Redux 概念简述
+
+Redux  是一个数据层框架。
+
+Redux的设计理念是把所有的数据放在store中进行管理，当一个组件改变了store的内容，其他组件可以感知到store的变化及时更新数据，间接实现了组件间数据传递。
+
+![1562109724375](./img/redux.png)
+
+Redux = Reducer + Flux
+
+Flux 是官方推出的最原始的数据层框架，它有一些缺点，例如公共存储区域可以由很多歌store组成，数据存储时可能会产生数据依赖的问题。
+
+Redux 是 Flux 的升级版，并引入了 Reducer。
+
+### 5-2 Redux 的工作流程
+
+![1562111595167](./img/redux flow.png)
+
+React Component (借书的人)
+
+Action Creators (借什么书)
+
+Store (图书馆管理员)
+
+Reducers (图书记录本)
+
+整个流程：借书人和图书管理员说借哪一本书，管理员通过记录本知道书在哪，并拿到书给借书人。
+
+对应Redux的流程：组件 React Components和Store说要我要获取数据，Action Creators 创建了一句话告诉了 Store，Store并不知道要给你什么数据，它需要查Reducers，Reducers知道你需要什么数据，Store拿到数据后给组件；同理更新数据。
+
+
+
+### 5-3 使用 Antd 实现 TodoList 页面布局
+
+### 5-4 创建 redux 中的 store
+
+### 5-5 Action 和 Reducer 的编写
+
+### 5-6 使用 Redux 完成 TodoList 删除功能
+
+### 5-7 ActionTypes 的拆分
+
+### 5-8 使用 actionCreator 统一创建 action
+
+### 5-9 Redux 知识点复习补充
