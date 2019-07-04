@@ -462,6 +462,8 @@ module.exports = app
 ctx.session.count++
 ```
 
+这里操作的session对象，并没有直接操作redis，是通过中间件操作的。
+
 刷新页面访问，在application中就可以看到存放有session的cookie了
 
 更改cookie的key和前缀
@@ -490,4 +492,285 @@ app.use(session({
 
 之前设置经过一个中间件时，session.count++，再次请求时count+2,是因为浏览器请求了两个文件，都经过了这个中间件。
 
-![1562145956742](C:\Users\Administrator\AppData\Roaming\Typora\typora-user-images\1562145956742.png)
+![1562145956742](./img/redis-cli查看数据.png)
+
+**不通过中间件，直接操作redis**
+
+不经过session读写redis
+
+通过中间件`koa-redis` 创建redis的客户端，通过客户端直接操作redis
+
+```js
+const router = require('koa-router')()
+const Redis = require('koa-redis')
+const Person = require('../dbs/models/person')
+
+// 新建 redis 客户端
+const Store = new Redis().client
+
+router.prefix('/users')
+
+router.get('/fix', async function(ctx) {
+  const st = await Store.hset('fix', 'name', Math.random())
+  ctx.body = {
+    code: 0
+  }
+})
+
+module.exports = router
+```
+
+通过curl发送一个get请求
+
+```shell
+curl http://localhost:3000/users/fix
+```
+
+在 redis-cli 中，输入命令
+
+`key *` 可以查看所有key，发现有fix
+
+通过 `hget fix name` 查看value值
+
+![1562203948176](./img/redis直接操作.png)
+
+所以redis有两种使用场景
+
+- 结合 session 使用
+- 只是为了存储数据，保证高速读写，也可以用redis
+
+具体redis的操作命令可以参考，redis 菜鸟 文档
+
+## 第5章 Nuxt.js基础知识
+
+Nuxt是Vue实现SSR最好的方案，我们整个项目都是基于Nuxt框架来实现的，我们需要了解如何通过脚手架快速初始化一个工程项目，熟悉每个目录的含义，知道如何配置各个页面的视图、模板、异步获取数据等。
+
+### Nuxt.js 概述
+
+基于 vue2 包含了 vue-router，可以支持 vuex 、Vue Server Render、vue-meta。
+
+### Nust.js 工作流
+
+![1562204744128](./img/nuxtjs工作流.png)
+
+### Nuxt.js 安装
+
+```shell
+vue init nuxt-community/koa-template
+```
+
+使用这个模板，需要把nuxt版本降级到1.4.2
+
+npm 切换依赖包安装源
+
+```shell
+nrm use npm 选择 npm 作为安装源
+nrm ls 查看安装源
+```
+
+- 路由&示例
+- 页面模板&示例
+- 异步数据&示例&SSR剖析
+- Vuex应用&示例
+
+mac下eslint会提示有错误，需要更新 eslint-plugin-html，`npm i eslint-plugin-html@^3`，安装主版本是3的以上版本。
+
+这里没有提示，暂时用主版本是2的版本。
+
+Vue SSR 工作原理
+
+- SSR 概述
+  - 用来解决 SEO 的问题
+  - 使结果快速展现
+- SSR 实现原理
+  - 
+- Vue SSR 的渲染流程
+
+## 第6章 实战准备
+
+工程搭建使用Nuxt脚手架快速搭建工程，这块是通用的，所有学员都可以直接应用到自己的项目。
+
+- 环境准备
+- 项目安装
+- 辅助工具安装
+- 配置改装
+
+### 6-1 环境准备与项目安装
+
+环境准备
+
+- node，8.12.0
+- vue，2.5.17
+- npm，6.4.1
+- webpack，4.19.1
+- nuxt，2.0.0
+
+项目安装
+
+1. npm install -g npx
+2. npx create-nuxt-app project-name
+
+![1562219845446](./img/create-nuxt-app配置选项.png)
+
+###  6-2 辅助工具安装与配置改装
+
+#### 辅助工具安装
+
+- MongoDB
+- redis
+- TObo 3T
+
+#### 配置改装
+
+- 支持es6/7，例如 import/export
+- 使用 sass
+- 修改 build配置
+
+**不识别es module语法，通过 babel 解决，顺便解决es6编译问题**
+
+1. 修改脚本命令
+2. 添加babel配置文件
+3. 安装babel所需插件
+
+1.修改脚本命令
+
+改dev和start添加`--exec babel-node`
+
+```json
+  "scripts": {
+    "dev": "cross-env NODE_ENV=development nodemon server/index.js --watch server --exec babel-node",
+    "start": "cross-env NODE_ENV=production node server/index.js --exec babel-node",
+  },
+```
+
+2.添加babel配置文件
+
+在根目录创建 `.babelrc` 文件，添加如下配置
+
+```json
+{
+  "presets": ["es2015", "stage-0"]
+}
+```
+
+3.安装babel所需插件
+
+先全局安装 babel-cli babel-core，否则会报内部没有 babel-node 命令
+
+```shell
+npm i babel-cli babel-core -g
+```
+
+项目安装
+
+```shell
+npm i babel-cli   // 这是babel解释器的客户端主程序 
+npm i babel-core   // babel的核心文件,好像默认会自动安装
+npm i babel-preset-es2015 // 把代码转换成ES6
+npm i babel-preset-stage-0 // 把代码转换成ES7
+```
+
+**使用 sass**
+
+当我们在vue文件中，使用scss语法会出错 `<style lang="scss">`
+
+需要安装sass对应loader
+
+```shell
+npm install --save-dev node-sass sass-loader
+```
+
+重启项目生效。
+
+**修改 build配置**
+
+修改 nuxt.config.js
+
+1.配置文件
+
+添加 reset.css 和 main.css，main.css 后面会创建，这里先注释掉
+
+```json
+css: [
+    'element-ui/lib/theme-chalk/reset.css',
+    'element-ui/lib/theme-chalk/index.css'
+    // '~assets/css/main.css'
+  ],
+```
+
+2.添加缓存，增加编译速度
+
+在build配置选项中，添加 cache: true
+
+```json
+build: {
+    transpile: [/^element-ui/],
+    /*
+    ** You can extend webpack config here
+    */
+    extend(config, ctx) {
+    },
+    cache: true
+  }
+```
+
+## 第7章 开发美团网首页
+
+从需求分析到设计思路讲述再通过手把手的引导实现首页设计，在功能上包括城市定位服务，头部引导导航，搜索等。
+
+### 7-1 需求分析
+
+需求分析
+
+- 模板设计
+- 组件设计
+- 数据结构设计
+- 接口设计
+
+模板设计
+
+大多数页面可分为三大板块 header、body、footer，可作为默认模板。而像登录注册明显板式不同的可以单独出来。然后再根据具体内容，根据功能或内容等不同分类，抽象成组件。
+
+![1562227328021](./img/美团-需求分析-模板设计.png)
+
+组件设计
+
+城市服务组件
+
+![1562229150547](./img/美团-需求分析-组件设计-city.png)
+
+用户数据&状态
+
+![1562229408315](C:\Users\Administrator\Desktop\Blog\vue.js\img\美团-需求分析-组件设计-用户数据和状态.png)
+
+导航标签
+
+![1562229714544](C:\Users\Administrator\AppData\Roaming\Typora\typora-user-images\1562229714544.png)
+
+这里完全可以写死
+
+需要考虑的是
+
+- 如何节省网络请求？
+- 如何语义化？
+- DOM最简化？
+
+...
+
+### 7-2 首页Header开发-城市定位服务设计
+
+### 7-3 首页Header开发-头部引导导航设计
+
+### 7-4 首页Header开发-搜索界面设计
+
+### 7-5 Bug修复
+
+### 7-6 首页搜索
+
+### 7-7 首页菜单（1）
+
+### 7-8 首页菜单（2）
+
+### 7-9 章节小结
+
+### 7-10 Footer补充
