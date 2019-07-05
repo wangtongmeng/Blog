@@ -761,6 +761,10 @@ build: {
 
 ### 7-3 首页Header开发-头部引导导航设计
 
+报document错误的时候，解决方案是把 nuxt.config.js 的cache设为false，cache:false
+
+<https://github.com/nuxt/nuxt.js/issues/3804>
+
 ### 7-4 首页Header开发-搜索界面设计
 
 ### 7-5 Bug修复
