@@ -1199,13 +1199,92 @@ Reducers (图书记录本)
 
 对应Redux的流程：组件 React Components和Store说要我要获取数据，Action Creators 创建了一句话告诉了 Store，Store并不知道要给你什么数据，它需要查Reducers，Reducers知道你需要什么数据，Store拿到数据后给组件；同理更新数据。
 
-
-
 ### 5-3 使用 Antd 实现 TodoList 页面布局
+
+后端管理系统用的比较多，用户端用得少。
 
 ### 5-4 创建 redux 中的 store
 
+创建 store，并从 store 中取数据
+
+- 创建 store，使用 redux 中的 createStore 方法创建 store。
+- 创建 reducer 并传给 store，reducer 是一个函数接收 state 和 action 两个参数。
+- 在组件中使用 store，通过 store.getState() 获取 store 中的数据。
+
+安装 redux
+
+```shell
+yarn add redux
+```
+
+创建 store
+
+```js
+// store/index.js
+import { createStore } from 'redux'
+const store = createStore()
+export default store
+```
+
+创建 reducer
+
+```js
+// store/reducer.js
+const defaultState = {
+  inputValue: '123',
+  list: [1,2]
+}
+
+export default (state = defaultState, action) => {
+  return state
+}
+```
+
+store 使用 reducer
+
+```js
+// store/index.js
+import { createStore } from 'redux'
+import reducer from './reducer'
+
+const store = createStore(reducer)
+
+export default store
+```
+
+在组件中使用 store
+
+```js
+import React, { Component } from 'react'
+import 'antd/dist/antd.css'
+import { Input, Button, List } from 'antd'
+import store from './store'
+
+class TodoList extends Component {
+	constructor(props) {
+		super(props)
+		this.state = store.getState()
+	}
+
+	render() {
+		return (
+			<div>
+				<div>
+					<Input value={this.state.inputValue} placeholder="todo info" style={{ width: '300px', marginRight: '10px' }} />
+					<Button type="primary">Primary</Button>
+				</div>
+				<List style={{ width: '300px' }} dataSource={this.state.list} renderItem={item => <List.Item>{item}</List.Item>} />
+			</div>
+		)
+	}
+}
+
+export default TodoList
+```
+
 ### 5-5 Action 和 Reducer 的编写
+
+安装 chrome 插件，redux-devtools
 
 ### 5-6 使用 Redux 完成 TodoList 删除功能
 
