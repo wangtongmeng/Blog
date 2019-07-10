@@ -1199,6 +1199,8 @@ Reducers (图书记录本)
 
 对应Redux的流程：组件 React Components和Store说要我要获取数据，Action Creators 创建了一句话告诉了 Store，Store并不知道要给你什么数据，它需要查Reducers，Reducers知道你需要什么数据，Store拿到数据后给组件；同理更新数据。
 
+react组件改变store数据先派发 action, action 会通过 dispatch 方法传递给 store，store 把之前的数据和 action 转发给 reducer，reducer 是一个函数，它接收到 previousState 和 action 后进行处理并返回一个新的 state 给 store，store用新state替换之前的state，store数据发生改变，react组件会感知到，组件会从store中重新取数据，并更新组件数据，从而实现页面数据的变化。
+
 ### 5-3 使用 Antd 实现 TodoList 页面布局
 
 后端管理系统用的比较多，用户端用得少。
@@ -1286,10 +1288,117 @@ export default TodoList
 
 安装 chrome 插件，redux-devtools
 
+组件和store通信
+
+创建action,通过 store.dispatch(action)传给 store，store 会自动把当前数据（上一次存储的数据）和 action 转发给 reducer，reducer 通过 action 处理上一次数据（reducer 可以接收 state, 但绝不能修改 state）并返回一个新的数据给 store，store会用新数据替换老数据。通过 store.subscribe() 订阅 store，当 store 发生改变，subscribe 的函数参数会自动执行。我们可以从store中拿到新数据替换组件中老的数据this.setState(store.getState())
+
 ### 5-6 使用 Redux 完成 TodoList 删除功能
 
 ### 5-7 ActionTypes 的拆分
 
+由于组件想要修改组件数据时，需要派发 action，用到了 action.type，而在reducer中也会用到action.type来判断进行不同的处理，type的值是一个字符串，如果其中一个拼写错误，错误非常难以找到。而变量和常量的拼写错误是可以被检测到的，所以需要拆分出 actionTypes.js
+
+创建 /store/actionTypes.js
+
+```js
+export const CHANGE_INPUT_VALUE = 'change_input_value'
+export const ADD_TODO_ITEM = 'add_todo_item'
+export const DELETE_TODO_ITEM = 'delete_todo_item'
+```
+
+在组件和reducer.js中引入
+
+TodoList.js
+
+```js
+import { CHANGE_INPUT_VALUE } from './store/actionTypes'
+
+	handleInputChange(e) {
+		const action = {
+			type: CHANGE_INPUT_VALUE,
+			value: e.target.value
+		}
+		store.dispatch(action)
+	}
+```
+reducer.js
+```js
+import { CHANGE_INPUT_VALUE } from './actionTypes'
+
+const defaultState = {}
+
+export default (state = defaultState, action) => {
+  if (action.type === CHANGE_INPUT_VALUE) {
+  }
+  return state
+}
+```
+
 ### 5-8 使用 actionCreator 统一创建 action
 
+通过 actionCreator 统一创建管理 action，方便维护和自动化测试。
+
+创建 /store/actionCreators.js
+
+```js
+import { CHANGE_INPUT_VALUE, ADD_TODO_ITEM, DELETE_TODO_ITEM } from './actionTypes'
+
+export const getInputChangeAction = (value) => ({
+  type: CHANGE_INPUT_VALUE,
+  value
+})
+
+export const getAddItemAction = () => ({
+  type: ADD_TODO_ITEM
+})
+
+export const getDeleteItemAction = (index) => ({
+  type: DELETE_TODO_ITEM,
+  index
+})
+```
+
+在组件使用 actionCreator  生成 action
+
+```js
+import { getInputChangeAction, getAddItemAction, getDeleteItemAction } from './store/actionCreators'
+
+	handleInputChange(e) {
+		const action = getInputChangeAction(e.target.value)
+		store.dispatch(action)
+	}
+
+	handleStoreChange() {
+		this.setState(store.getState())
+	}
+
+	handleBtnClick() {
+		const action = getAddItemAction()
+		store.dispatch(action)
+	}
+```
+
 ### 5-9 Redux 知识点复习补充
+
+Redux 设计和使用的三项原则
+
+- store 是唯一的
+- 只有 store 能够改变自己的内容
+  - rsducer 只是根据 state 的副本进行操作并返回一个新的 state 给 store，store 再更新自己的数据。
+- Reducer  必须是纯函数
+
+纯函数指的是，给定固定的输入，就一定会有固定的输出，而且不会有任何副作用。
+
+一旦一个函数内有 setTimeout、ajax请求 、日期相关的操作。
+
+副作用，当我们对函数参数进行了修改，有可能会产生副作用。
+
+复习
+
+createStore，创建 store
+
+store.dispatch，派发 action
+
+store.getState，获取store 数据
+
+store.subscribe，订阅store，一旦数据发生变化，执行参数函数
