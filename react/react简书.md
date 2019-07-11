@@ -1402,3 +1402,132 @@ store.dispatch，派发 action
 store.getState，获取store 数据
 
 store.subscribe，订阅store，一旦数据发生变化，执行参数函数
+
+## 第6章 Redux进阶
+
+本章主要讲解UI组件与容器组件基础，如何使用redux-thunk，redux-saga等Redux中间件，以及react-redux的使用方式。
+
+###  6-1 UI组件和容器组件
+
+UI组件(傻瓜组件)负责页面渲染。
+
+容器组件(聪明组件)负责页面逻辑。
+
+UI组件
+
+```js
+import React, { Component } from 'react'
+import { Input, Button, List } from 'antd'
+
+class TodoListUI extends Component {
+  render() {
+    return (
+      <div>
+				<div>
+					<Input
+						value={this.props.inputValue}
+						placeholder="todo info"
+						style={{ width: '300px', marginRight: '10px' }}
+						onChange={this.props.handleInputChange}
+					/>
+					<Button type="primary" onClick={this.props.handleBtnClick}>Primary</Button>
+				</div>
+				<List
+          style={{marginTop: '10px', width: '300px' }}
+          bordered
+					dataSource={this.props.list}
+					renderItem={(item, index) => (<List.Item onClick={(index) => {this.props.handleItemDelete(index)}}>{item}</List.Item>)}
+				/>
+			</div>
+    )
+  }
+}
+
+export default TodoListUI
+```
+
+容器组件
+
+```js
+import React, { Component } from 'react'
+import 'antd/dist/antd.css'
+import store from './store'
+import { getInputChangeAction, getAddItemAction, getDeleteItemAction } from './store/actionCreators'
+import TodoListUI from './TodoListUI'
+
+class TodoList extends Component {
+	constructor(props) {
+		super(props)
+		this.state = store.getState()
+		this.handleInputChange = this.handleInputChange.bind(this)
+		this.handleStoreChange = this.handleStoreChange.bind(this)
+		this.handleBtnClick = this.handleBtnClick.bind(this)
+		this.handleItemDelete = this.handleItemDelete.bind(this)
+		store.subscribe(this.handleStoreChange)
+	}
+
+	render() {
+		return (
+			<TodoListUI 
+				inputValue={this.state.inputValue} 
+				list={this.state.list}
+				handleInputChange={this.handleInputChange}
+				handleBtnClick={this.handleBtnClick}
+				handleItemDelete={this.handleItemDelete}
+			/>
+
+		)
+		
+	}
+
+	handleInputChange(e) {
+		const action = getInputChangeAction(e.target.value)
+		store.dispatch(action)
+	}
+
+	handleStoreChange() {
+		this.setState(store.getState())
+	}
+
+	handleBtnClick() {
+		const action = getAddItemAction()
+		store.dispatch(action)
+	}
+
+	handleItemDelete(index) {
+		const action = getDeleteItemAction(index)
+		store.dispatch(action)
+	}
+}
+
+export default TodoList
+```
+
+注意从父组件传入的函数，如果需要传参需要在一个匿名函数中调用传参
+
+```js
+<List
+  dataSource={this.props.list}
+  renderItem={(item, index) => (<List.Item onClick={(index) => {this.props.handleItemDelete(index)}}>{item}</List.Item>)}
+  />
+```
+
+###  6-2 无状态组件
+
+当一个组件只有一个render函数时，我们就可以用一个无状态组件定义这个组件。无状态组件就是一个函数。
+
+###  6-3 Redux 中发送异步请求获取数据
+
+###  6-4 使用Redux-thunk 中间件实现ajax数据请求
+
+###  6-5 什么是Redux的中间件
+
+###  6-6 Redux-saga中间件入门（1）
+
+###  6-7 Redux-saga中间件入门（2）
+
+###  6-8 如何使用 React-redux（1）
+
+###  6-9 如何使用 React-redux（2）
+
+###  6-10 使用React-redux完成TodoList功能
