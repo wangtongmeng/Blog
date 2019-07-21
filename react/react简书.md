@@ -1516,9 +1516,90 @@ export default TodoList
 
 当一个组件只有一个render函数时，我们就可以用一个无状态组件定义这个组件。无状态组件就是一个函数。
 
+无状态组件的优势
+
+性能比较高，因为它就是一个函数。而普通的组件是一个类，既要执行render又要执行各种生命周期函数。
+
+应用场景
+
+当我们定义UI组件时，只负责页面渲染，没有进行任何逻辑操作时，这时可以通过无状态组件定义UI组件。
+
+但这不是绝对的，UI组件也可以做一些简单的业务逻辑的。
+
+```js
+const TodoListUI = (props) => {
+    return (
+      <div>
+				<div>
+					<Input
+						value={props.inputValue}
+						placeholder="todo info"
+						style={{ width: '300px', marginRight: '10px' }}
+						onChange={props.handleInputChange}
+					/>
+					<Button type="primary" onClick={props.handleBtnClick}>Primary</Button>
+				</div>
+				<List
+          style={{marginTop: '10px', width: '300px' }}
+          bordered
+					dataSource={props.list}
+					renderItem={(item, index) => (<List.Item onClick={(index) => {props.handleItemDelete(index)}}>{item}</List.Item>)}
+				/>
+			</div>
+    )
+}
+
+// class TodoListUI extends Component {
+//   render() {
+//     return (
+//       <div>
+// 				<div>
+// 					<Input
+// 						value={this.props.inputValue}
+// 						placeholder="todo info"
+// 						style={{ width: '300px', marginRight: '10px' }}
+// 						onChange={this.props.handleInputChange}
+// 					/>
+// 					<Button type="primary" onClick={this.props.handleBtnClick}>Primary</Button>
+// 				</div>
+// 				<List
+//           style={{marginTop: '10px', width: '300px' }}
+//           bordered
+// 					dataSource={this.props.list}
+// 					renderItem={(item, index) => (<List.Item onClick={(index) => {this.props.handleItemDelete(index)}}>{item}</List.Item>)}
+// 				/>
+// 			</div>
+//     )
+//   }
+// }
+```
+
 ###  6-3 Redux 中发送异步请求获取数据
 
+在 componentDidMount 中进行异步请求，拿到数据后改变 store 数据。
+
+```js
+componentDidMount() {
+		axios.get('/api/list.json').then(({data}) => {
+			const action = initListAction(data)
+			store.dispatch(action)
+		})
+	}
+```
+
 ###  6-4 使用Redux-thunk 中间件实现ajax数据请求
+
+之前在组建中的 componentDidMount 做了一个 ajax 的异步请求。当我们把所有的异步请求或复杂的逻辑放在组建中实现时，组件会显得过于臃肿。这时可以同一放到一个地方集中管理。
+
+Redux-thunk 中间件能够把**异步请求**或**复杂的逻辑**放到action中处理。
+
+Redux-thunk 是 redux 的一个中间件。
+
+安装 redux-thunk，`yarn add redux-thunk`
+
+redux_devtools_extention 也是一个 redux 的中间件。
+
+什么时候可以用redux的中间件？通过 redux 创建 store 时使用中间件，所以这里的中间件指的是 redux 的中间件。
 
 ###  6-5 什么是Redux的中间件
 
