@@ -773,8 +773,359 @@ build: {
 
 ### 7-7 首页菜单（1）
 
+布局
+
+上下两大部分，第一部分，左边是菜单，右边是xxx，第二部分是一个大组件
+
+一定要把dom结构设计的很简单，数据结构可以相对复杂些。
+
 ### 7-8 首页菜单（2）
 
 ### 7-9 章节小结
 
 ### 7-10 Footer补充
+
+## 第8章 开发美团网首页-登录注册
+
+从静态页面实现到真实的业务逻辑，一步一步带领大家实现注册、登录、退出，其中还用到了第三方RTMP服务，在技术上mongodb，passport,redis一应俱全
+
+passport 验证权限的类库
+
+**需求分析(数据结构设计)**
+
+![1562723800046](./img/美团-表数据结构设计.png)
+
+![1562724253966](./img/美团-表数据结构-城市推荐.png)
+
+**需求分析(接口设计)**
+
+用户类接口
+
+- 注册，/users/signup
+- 登录，/users/signin
+- 验证，/users/verify
+- 退出，/users/exit
+- 获取用户信息，/users/getUser
+
+**创建配置文件并配置**
+
+- mongodb 数据库地址，'mongodb://127.0.0.1:27017/student'，mongodb服务器地址+数据库名称。
+- redis 数据库地址
+- smtp 服务地址、用户邮箱、用户授权码
+  - smtp qq邮箱设置：点击设置->账户->往下拉，开启smtp服务(前两项)后获取授权码，授权码放到config.js中，**严格保密**。
+- 随机生成邮箱验证码
+- 验证码过期时间
+  - 任何地方都会用到过期时间，要保证唯一性，所以放到配置文件中合适。
+
+server/dbs/models/config.js
+
+```js
+export default {
+  dbs: 'mongodb://127.0.0.1:27017/student',
+  redis: {
+    get host () {
+      return '127.0.0.1'
+    },
+    get port () {
+      return 6379
+    }
+  },
+  smtp: {
+    get host () {
+      return 'smtp.qq.com'
+    },
+    get user () {
+      return '767610876@qq.com'
+    },
+    // 授权码严格保密
+    get pass () {
+      return 'xxx'
+    }
+  },
+  get code () {
+    return () => {
+      return Math.random().toString(16).slice(2, 6).toUpperCase()
+    }
+  },
+  get expire () {
+    return () => {
+      return new Date().getTime() + 60 * 60 * 1000
+    }
+  }
+}
+```
+
+**设置用户模型**
+
+server/dbs/models/users.js
+
+安装 mongoose，`npm i mongoose`
+
+```js
+import { Schema, model } from 'mongoose'
+
+const UserSchema = new Schema({
+  username: {
+    type: String,
+    unique: true,
+    require: true
+  },
+  password: {
+    type: String,
+    require: true
+  },
+  email: {
+    type: String,
+    require: true
+  }
+})
+
+export default model('User', UserSchema)
+```
+
+**设置axios**
+
+安装包，`npm i axios`
+
+通过axios.create() 创建 axios 的实例，期间可以进行配置，设置一些 axios 的公共配置，如基础路径、超时时间、headers 等等
+
+server/interface/utils/axios.js
+
+```js
+import axios from 'axios'
+
+const instance = axios.create({
+  baseURL: `http://${process.env.HOST || 'localhost'}:${process.env.PORT || 3000}`,
+  timeout: 1000,
+  headers: {
+
+  }
+})
+
+export default instance
+```
+
+**创建 passport**
+
+安装包，`npm i koa-passport passport-local`
+
+由于 http 是无状态的，我们通过 session 验证状态。用户每次进来，都自动通过 session 验证，需要进行序列化和反序列化；反序列化指的是，这样在每次请求中都会从 cookie的 session 中读取用户对象和服务端的session做验证对比，如果找到说明是登录状态，从而达到从无状态到有状态的转变；序列化指的是，用户登录验证成功后，会把用户数据存储在 session中。
+
+server/interface/uitls/passport.js
+
+```js
+import passport from 'koa-passport'
+import LocalStrategy from 'passport-local'
+import UserModel from '../../dbs/models/users'
+
+passport.use(new LocalStrategy(async function (username, password, done) {
+  let where = {
+    username
+  }
+  let result = await UserModel.findOne(where)
+  if (result !== null) {
+    if (result.password === password) {
+      return done(null, result)
+    } else {
+      return done(null, false, '密码错误')
+    }
+  } else {
+    return done(null, false, '用户不存在')
+  }
+}))
+// 序列化
+passport.serializeUser(function (user, done) {
+  done(null, user)
+})
+// 反序列化
+passport.deserializeUser(function (user, done) {
+  return done(null, user)
+})
+
+export default passport
+```
+
+**创建用户接口**
+
+安装包 `npm i koa-router koa-redis nodemailer`
+
+创建路由对象
+
+获取redis 的客户端
+
+在signup接口中定义逻辑，获取注册请求字段username、password、email、code(验证码)。
+
+验证验证码
+
+根据code验证验证码，从redis中获取 在nodemail在发验证码时会在redis上存储的验证码，对比验证码。
+
+由于reids是键值存储的，通过nodemail:开头规范验证码验证相关的数据，通过username来关联具体用户。
+
+验证是否过期。
+
+验证账户和密码是否已注册，未注册则注册并写库
+
+server/interface/users.js
+
+```js
+import Router from 'koa-router'
+import Redis from 'koa-redis'
+import nodeMailer from 'nodemailer'
+import User from '../dbs/models/users'
+import Passport from './utils/passport'
+import Email from '../dbs/models/config'
+import axios from './utils/axios'
+
+let router = new Router({
+  prefix: '/users'
+})
+
+let Store = new Redis().client
+
+router.post('signup', async (ctx) => {
+  const {
+    username,
+    password,
+    email,
+    code
+  } = ctx.request.body
+
+  if (code) {
+    const saveCode = await Store.hget(`nodemail:${username}`, 'code')
+    const saveExpire = await Store.hget(`nodemail:${username}`, 'expire')
+    if (code === saveCode) {
+      if (new Date().getTime() - saveExpire > 0) {
+        ctx.body = {
+          code: -1,
+          msg: '验证码已过期，请重新尝试'
+        }
+        return false
+      } else {
+        ctx.body = {
+          code: -1,
+          msg: '请填写正确的验证码'
+        }
+      }
+    }
+  } else {
+    ctx.body = {
+      code: -1,
+      msg: '请填写验证码'
+    }
+  }
+  let user = await User.find({
+    username
+  })
+  if (user.length) {
+    ctx.body = {
+      code: -1,
+      msg: '已被注册'
+    }
+    return
+  }
+  // 验证码正确+首次注册=可以写库
+  let nuser = await User.create({
+    username,
+    password,
+    email
+  })
+  // 验证写库是否成功
+  if (nuser) {
+    let res = await axios.post('/users/signin', {
+      username,
+      password
+    })
+    if (res.data && res.data.code === 0) {
+      ctx.body = {
+        code: 0,
+        msg: '注册成功',
+        user: res.data.user
+      }
+    } else {
+      ctx.body = {
+        code: -1,
+        msg: 'error'
+      }
+    }
+  } else {
+    ctx.body = {
+      code: -1,
+      msg: '注册失败'
+    }
+  }
+})
+
+```
+
+编写用户类的其他接口
+
+**配置**
+
+**启动 redis 服务**
+
+```shell
+redis-server
+```
+
+出现提示  `The server is now ready to accept connections on ort 6379` 说明启动成功。
+
+**启动 mongodb**
+
+```shell
+mongod
+```
+
+出现提示  `waiting for connections on port 27017 ` 说明启动成功。
+
+## 编写页面登录注册退出
+
+用户名因为有可能是汉字需要通过`encodeURIComponent`编码
+
+密码需要md5的方式加密
+
+安装包，`npm i crypto-js`，常用的和加密相关的库，有多种加密方式。
+
+**登录后修改登录状态**
+
+在 user.vue 组件中
+
+获取登录状态两种方式：
+- vuex
+- 异步获取(这里)，这里使用了 async和await
+
+使用异步获取接口的方式获取用户状态，并使用 async 和 await
+
+```js
+async mounted () {
+    const { status, data: {user}} = await this.$axios.get('/users/getUser')
+}
+```
+
+注意 user 需要使用 decodeURIComponent(encodedURI) 解码
+
+退出逻辑，使用中间件机制
+
+```js
+<template>
+  <div>
+    exit
+  </div>
+</template>
+
+<script>
+  export default {
+    layout: 'blank',
+    middleware: async (ctx) => {
+      let { status, data } = await ctx.$axios.get('/users/exit')
+      if (status === 200 && data && data.code === 0) {
+        window.location.href = '/'
+      }
+    }
+  }
+</script>
+
+<style lang="scss">
+
+</style>
+```
+
