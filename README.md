@@ -6,11 +6,13 @@
 
 ### css&html
 
-- [photoshop切图](https://github.com/littlebirdflying/Blog/blob/master/css%26html/%E5%88%87%E5%9B%BE.md)
+- [photoshop 切图](https://github.com/littlebirdflying/Blog/blob/master/css%26html/%E5%88%87%E5%9B%BE.md)
 
 ### js
 
 ### vue
+
+- [vue 组件间通信](./vue.js/1.vue组件通信.md)
 
 ### react
 
