@@ -6,3 +6,21 @@
 
 svg兼容性问题
 
+vue组件中
+
+```vue
+<template>
+	<svg>
+  	<use xlink:href='#icon-qq'></use>
+  </svg>
+</template>
+<script>
+	import '@/icons/svg/qq.svg'
+</script>
+```
+
+为了更方便的使用，还需要做两件事：
+
+- 图标自动导入：利用 require.context
+- 封装 SvgIcon 组件，使用方便，样式好控制
+
