@@ -4,36 +4,33 @@
 
 ## 笔记目录
 
-### css&html
+ **css&html**
 
 - [photoshop 切图](https://github.com/littlebirdflying/Blog/blob/master/css%26html/%E5%88%87%E5%9B%BE.md)
 
-### js
+ **js**
 
-异步编程
+- 异步编程
+  - promise 的使用及实现（本周）
+  - async await 的使用
 
-- promise 的使用及实现（本周）
-- async await 的使用
-
-### vue
+ **vue**
 
 - [vue 组件间通信](./vue.js/1.vue组件通信.md)
 
-  
+ **react**
 
-### react
+**webpack**
 
-### webpack
+**node**
 
-### node
+**http**
 
-### http
+**数据结构与算法**
 
-### 数据结构与算法
+**设计模式**
 
-### 设计模式
-
-### 性能优化
+ **性能优化**
 
 - 前端性能优化
 - css性能优化
@@ -41,8 +38,7 @@
 - vue性能优化
 - react性能优化
 
-待总结问题
+**待总结问题**
 
 - 图片处理
-- 
 
