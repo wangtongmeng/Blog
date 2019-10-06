@@ -1,3 +1,5 @@
+# react 简书
+
 B站https://www.bilibili.com/video/av37028937/?p=1，里面有些笔记
 
 **课程内容**
@@ -12,7 +14,14 @@ Redux、Redux进阶
 
 **技术**
 
-create-react-app、组件化思维、JSX、开发调试工具、虚拟DOM、生命周期、React-transition-group、Redux、Antd、UI，容器组件、无状态组件、redux-thunk、redux-saga、Styled-components、Immutable.js、redux-immutable、axios
+create-react-app、组件化思维、JSX、开发调试工具、虚拟DOM、生命周期、React-transition-group、Redux、Antd、UI，容器组件、无状态组件、redux-thunk、redux-saga、Styled-components(避免组件样式互相影响)、Immutable.js(避免数据误操作)、redux-immutable、axios
+
+**收获**
+
+- 彻底入门 React 的使用
+- 完整了解 React 的工具全家桶
+- 上手大型项目的前端开发
+- 规范的代码编写
 
 ## 第 2 章 react 初探
 
@@ -23,7 +32,7 @@ create-react-app、组件化思维、JSX、开发调试工具、虚拟DOM、生�
 - 函数式编程
 - 使用人数最多的前端框架
 - 健全的文档与完善的社区
-- React Fiber（react 16 之后的统称）
+- React Fiber（react 16 之后的统称），在16版本之后 react 在事件底层加入了事件优先级的概念，可以利用事件循环的碎片时间执行一些高优先级的用户交互，提高react用户体验
 
 **官网**：https://reactjs.org/
 
@@ -68,11 +77,11 @@ npm start
 
 精简项目文件，主要是public目录和src目录，只留下
 
-- index.html，模板文件
+- public/index.html，模板文件
 
-- index.js，入口文件
+- src/index.js，入口文件
 
-- App.js，根组件
+- src/App.js，根组件 
 
 PWA progressive web application，通过写网页的形式写一些app应用
 
@@ -91,7 +100,7 @@ PWA progressive web application，通过写网页的形式写一些app应用
 组件是通过类继承 React.Component 这个类来定义的，组件显示的内容就是 render 函数最终返回的内容。
 
 ```js
-// App.js
+// src/App.js
 import React, { Component } from 'react';
 
 class App extends Component {
