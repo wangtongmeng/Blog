@@ -207,6 +207,8 @@ ReactDOM.render(<TodoList />, document.getElementById('root'));
 
 **创建 TodoList 组件**
 
+Fragment 为占位符，渲染dom时不显示
+
 ```js
 // TodoList.js
 import React, { Component, Fragment } from 'react'
@@ -246,7 +248,7 @@ import React, { Component, Fragment } from 'react'
 
 class TodoList extends Component {
 
-  constructor (props) {
+  constructor (props) { // 最先被执行
     super(props)
     this.state = {
       inputValue: '',
@@ -258,8 +260,8 @@ class TodoList extends Component {
 			<Fragment>
 				<div>
 					<input 
-      			value={this.state.inputValue} 
-  					onChange={this.handleInputChange.bind(this)} 
+      			value={this.state.inputValue} // react中表达式须使用{}
+  					onChange={this.handleInputChange.bind(this)} // 使this指向组件
           />
 					<button>提交</button>
 				</div>
@@ -271,7 +273,7 @@ class TodoList extends Component {
 		)
   }
   handleInputChange (event) {
-    this.setState({
+    this.setState({ // 修改数据不能直接修改，需要通过setState
       inputValue: event.target.value
     })
   }
@@ -426,7 +428,7 @@ label在html中的作用是扩大点击区域，我们希望点击内容时，�
   })
 }
 ```
-子组件通过this.props获取值或方法。子组件中调用自身方法时绑定this操作，最好放在constructor中进行，可以节约性能。
+子组件通过this.props获取值或方法。子组件中调用自身方法时绑定this操作，最好放在constructor中进行，可以**节约性能**。
 ```jsx
 子组件 TodoItem.js
 import React, { Component } from 'react'
@@ -687,7 +689,7 @@ return (
 安装chrom插件 React Developer Tools
 
 - 灰色 不是react开发的
-- -红色 react开发代码
+- 红色 react开发代码
 - 黑色 react线上版本(如，知乎)
 
 可以通过它实时监控组件state的变化，不需要console.log了
@@ -700,7 +702,7 @@ PropTypes 校验父组件传入的prop，defaultProps 设置 prop 默认值
 
 ### 4-3 props，state 与 render 函数的关系
 
-当组件的state或props改变时，render函数会重新执行。
+当组件的state或props改变时，render 函数会重新执行。
 
 当父组件的render函数被执行时，它的子组件的render都将被重新运行一次。
 
