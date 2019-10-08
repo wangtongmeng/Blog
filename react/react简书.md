@@ -747,7 +747,7 @@ state发生变化,vdom对比
 
 若连续调用几次setState，且时间间隔很小，react会把多次setState合并成一个，只进行一次vdom比对，从而节省了性能。
 
-![1561858606889](C:\Users\wangtongmeng\AppData\Roaming\Typora\typora-user-images\1561858606889.png)
+![1561858606889](./img/setState.png)
 
 diff算法，同级比较
 
@@ -755,15 +755,21 @@ diff算法，同级比较
 
 虽然可能会同时替换很多dom，但同级比对，算法简单，比对速度快，大大减少了vdom对比的性能消耗。
 
-![1561858844581](C:\Users\wangtongmeng\AppData\Roaming\Typora\typora-user-images\1561858844581.png)
+![1561858844581](./img/diff-同级比对.png)
 
 为什么循环，key值不要用 index，如果用 index 作为 key，就没办法保证原始虚拟dom和新虚拟dom上的key值保持一致了。
 
-![1561860546217](C:\Users\wangtongmeng\AppData\Roaming\Typora\typora-user-images\1561860546217.png)
+![1561860546217](./img/循环-key.png)
+
+涉及的性能优化点
+
+- setState是异步的，多次setState会合并成一个
+- diff算法中的同级比对(diff算法中的一部分)
+- 循环中需要使用key，不要用index作为key值(diff算法中的一部分)
 
 ### 4-7 React 中 ref 的使用
 
-- ref 的使用
+- ref 的使用，用来操作dom
 - setState 与 ref 结合使用时的坑
 
 不使用ref，使用e.target 获取dom节点
@@ -845,29 +851,29 @@ handleBtnClick () {
 
 ### 4-8 React 的生命周期函数
 
-生命周期函数指在某一个时刻组件会自动调用执行的函数。
+生命周期函数指 在某一个时刻组件会自动调用执行的函数。
 
 ![1561885272948](C:\Users\wangtongmeng\AppData\Roaming\Typora\typora-user-images\1561885272948.png)
 
-初始化，是在constructor中初始化，设置 props 和 state。
+初始化initailization，是在constructor中初始化，设置 props 和 state。
 
-挂载（组件第一次挂载到页面的流程）
+挂载Mounting（组件第一次挂载到页面的流程）
 
-- componentWillMount，在组件即将被挂载到页面的时刻自动执行。
+- componentWillMount，在组件**即将**被挂载到页面的时刻自动执行。
 - render
 - componentDidMount，组件被挂载到页面之后，自动执行。
 
-更新
+更新Updation
 
 - shouldComponentUpdate，组件被更新之前，自动执行。返回值为布尔值，决定组件是否被更新。
-- componentWillUpdate，组件被更新前，自动执行。它在shouldComponentUpdate之后，若shouldComponentUpdate返回true它才会执行，否则不执行。
+- componentWillUpdate，`组件被更新前，自动执行。它在shouldComponentUpdate之后，若shouldComponentUpdate返回true它才会执行，否则不执行。`
 - render
-- componentDidUpdate
+- componentDidUpdate，组件更新完成后，自动执行
 - componentWillReceiveProps
   - 一个组件要从父组件接收参数
   - 若组件第一次存在于父组件中，不会执行
   - 若这个组件之前已经存在于父组件中，才会执行
-- 卸载
+- 卸载Unmounting
   - 当组件即将被从页面中剔除时执行。
 
 ### 4-9 React 生命周期函数的使用场景
