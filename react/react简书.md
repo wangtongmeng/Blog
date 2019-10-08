@@ -1,3 +1,5 @@
+# react 简书
+
 B站https://www.bilibili.com/video/av37028937/?p=1，里面有些笔记
 
 **课程内容**
@@ -12,7 +14,14 @@ Redux、Redux进阶
 
 **技术**
 
-create-react-app、组件化思维、JSX、开发调试工具、虚拟DOM、生命周期、React-transition-group、Redux、Antd、UI，容器组件、无状态组件、redux-thunk、redux-saga、Styled-components、Immutable.js、redux-immutable、axios
+create-react-app、组件化思维、JSX、开发调试工具、虚拟DOM、生命周期、React-transition-group、Redux、Antd、UI，容器组件、无状态组件、redux-thunk、redux-saga、Styled-components(避免组件样式互相影响)、Immutable.js(避免数据误操作)、redux-immutable、axios
+
+**收获**
+
+- 彻底入门 React 的使用
+- 完整了解 React 的工具全家桶
+- 上手大型项目的前端开发
+- 规范的代码编写
 
 ## 第 2 章 react 初探
 
@@ -23,7 +32,7 @@ create-react-app、组件化思维、JSX、开发调试工具、虚拟DOM、生�
 - 函数式编程
 - 使用人数最多的前端框架
 - 健全的文档与完善的社区
-- React Fiber（react 16 之后的统称）
+- React Fiber（react 16 之后的统称），在16版本之后 react 在事件底层加入了事件优先级的概念，可以利用事件循环的碎片时间执行一些高优先级的用户交互，提高react用户体验
 
 **官网**：https://reactjs.org/
 
@@ -68,11 +77,11 @@ npm start
 
 精简项目文件，主要是public目录和src目录，只留下
 
-- index.html，模板文件
+- public/index.html，模板文件
 
-- index.js，入口文件
+- src/index.js，入口文件
 
-- App.js，根组件
+- src/App.js，根组件 
 
 PWA progressive web application，通过写网页的形式写一些app应用
 
@@ -91,7 +100,7 @@ PWA progressive web application，通过写网页的形式写一些app应用
 组件是通过类继承 React.Component 这个类来定义的，组件显示的内容就是 render 函数最终返回的内容。
 
 ```js
-// App.js
+// src/App.js
 import React, { Component } from 'react';
 
 class App extends Component {
@@ -198,6 +207,8 @@ ReactDOM.render(<TodoList />, document.getElementById('root'));
 
 **创建 TodoList 组件**
 
+Fragment 为占位符，渲染dom时不显示
+
 ```js
 // TodoList.js
 import React, { Component, Fragment } from 'react'
@@ -237,7 +248,7 @@ import React, { Component, Fragment } from 'react'
 
 class TodoList extends Component {
 
-  constructor (props) {
+  constructor (props) { // 最先被执行
     super(props)
     this.state = {
       inputValue: '',
@@ -249,8 +260,8 @@ class TodoList extends Component {
 			<Fragment>
 				<div>
 					<input 
-      			value={this.state.inputValue} 
-  					onChange={this.handleInputChange.bind(this)} 
+      			value={this.state.inputValue} // react中表达式须使用{}
+  					onChange={this.handleInputChange.bind(this)} // 使this指向组件
           />
 					<button>提交</button>
 				</div>
@@ -262,7 +273,7 @@ class TodoList extends Component {
 		)
   }
   handleInputChange (event) {
-    this.setState({
+    this.setState({ // 修改数据不能直接修改，需要通过setState
       inputValue: event.target.value
     })
   }
@@ -417,7 +428,7 @@ label在html中的作用是扩大点击区域，我们希望点击内容时，�
   })
 }
 ```
-子组件通过this.props获取值或方法。子组件中调用自身方法时绑定this操作，最好放在constructor中进行，可以节约性能。
+子组件通过this.props获取值或方法。子组件中调用自身方法时绑定this操作，最好放在constructor中进行，可以**节约性能**。
 ```jsx
 子组件 TodoItem.js
 import React, { Component } from 'react'
@@ -678,7 +689,7 @@ return (
 安装chrom插件 React Developer Tools
 
 - 灰色 不是react开发的
-- -红色 react开发代码
+- 红色 react开发代码
 - 黑色 react线上版本(如，知乎)
 
 可以通过它实时监控组件state的变化，不需要console.log了
@@ -691,7 +702,7 @@ PropTypes 校验父组件传入的prop，defaultProps 设置 prop 默认值
 
 ### 4-3 props，state 与 render 函数的关系
 
-当组件的state或props改变时，render函数会重新执行。
+当组件的state或props改变时，render 函数会重新执行。
 
 当父组件的render函数被执行时，它的子组件的render都将被重新运行一次。
 
