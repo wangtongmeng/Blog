@@ -101,7 +101,7 @@ router.get('/testAsync', async (ctx) => {
 
 **自定义koa2中间件**
 
-创建一个中间件 middleware/koa-pv.js
+创建一个中间件 middleware/koa-pv.js，pv是日志的意思
 
 ```js
 function pv(ctx) {
@@ -123,7 +123,7 @@ const Koa = require('koa')
 const app = new Koa()
 const pv = require('./middleware/koa-pv')
 
-app.use(pv())
+app.use(pv()) // 
 ```
 
 刷新浏览器，向服务器发送请求，会输出 console.log的结果，证明中间件执行了
@@ -482,7 +482,7 @@ app.use(session({
 
 命令行 `redis-cli`，打开服务
 
-输入 `keys *`
+输入 `keys *`，查询所有key值
 
 可以看到我们之前配置过前缀是 mtpr的session
 
