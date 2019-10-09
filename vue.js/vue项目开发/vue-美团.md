@@ -13,11 +13,11 @@
 
 ### 技术内容
 
-![vue-美团-技术内容](./img/vue-美团-技术内容.png)
+![vue-美团-技术内容](../img/vue-美团-技术内容.png)
 
 ### 主要内容
 
-![vue-美团-主要内容](./img/vue-美团-主要内容.png)
+![vue-美团-主要内容](../img/vue-美团-主要内容.png)
 
 ## vue基础
 
@@ -70,6 +70,8 @@ async 和 await：用同步的方式解决异步的问题。
 await 后跟的是 Promise，若不是 Promise 会转换成 Promise
 
 ```js
+const router = require('koa-router')()
+
 router.get('/testAsync', async (ctx) => {
   global.console.log('start', new Date().getTime()) // time1
   const a = await new Promise((resolve, reject) => {
@@ -77,7 +79,7 @@ router.get('/testAsync', async (ctx) => {
       global.console.log('async a', new Date().getTime())
       resolve('a')
     }, 1000)
-  })
+  }) 
   // const b = Promise.resolve(123)
   const b = 123
 
@@ -95,7 +97,7 @@ router.get('/testAsync', async (ctx) => {
 - koa2中间件的原理
 - 自定义koa2中间件
 
-![1562057065279](./img/koa2中间件原理.png)
+![1562057065279](../img/koa2中间件原理.png)
 
 **自定义koa2中间件**
 
@@ -163,7 +165,7 @@ app.use(m3())
 
 刷新页面，服务端会打印出如下内容，运行顺序符合洋葱模型，最开始的中间件运行后，最后还是可以会运行，形成一个闭环。
 
-![1562059619857](./img/koa洋葱模型demo结果.png)
+![1562059619857](../img/koa洋葱模型demo结果.png)
 
 ###  3-4 koa路由和cookie
 
@@ -484,7 +486,7 @@ app.use(session({
 
 可以看到我们之前配置过前缀是 mtpr的session
 
-![1562145431967](/img/redis-查看session.png)
+![1562145431967](../img/redis-查看session.png)
 
 
 
@@ -492,7 +494,7 @@ app.use(session({
 
 之前设置经过一个中间件时，session.count++，再次请求时count+2,是因为浏览器请求了两个文件，都经过了这个中间件。
 
-![1562145956742](./img/redis-cli查看数据.png)
+![1562145956742](../img/redis-cli查看数据.png)
 
 **不通过中间件，直接操作redis**
 
@@ -532,7 +534,7 @@ curl http://localhost:3000/users/fix
 
 通过 `hget fix name` 查看value值
 
-![1562203948176](./img/redis直接操作.png)
+![1562203948176](../img/redis直接操作.png)
 
 所以redis有两种使用场景
 
@@ -551,7 +553,7 @@ Nuxt是Vue实现SSR最好的方案，我们整个项目都是基于Nuxt框架来
 
 ### Nust.js 工作流
 
-![1562204744128](./img/nuxtjs工作流.png)
+![1562204744128](../img/nuxtjs工作流.png)
 
 ### Nuxt.js 安装
 
@@ -610,7 +612,7 @@ Vue SSR 工作原理
 1. npm install -g npx
 2. npx create-nuxt-app project-name
 
-![1562219845446](./img/create-nuxt-app配置选项.png)
+![1562219845446](../img/create-nuxt-app配置选项.png)
 
 ###  6-2 辅助工具安装与配置改装
 
