@@ -878,7 +878,7 @@ handleBtnClick () {
 
 ### 4-9 React 生命周期函数的使用场景
 
-- **性能提升**，shouldComponentUpdate 避免子组件不必要的render操作。
+- **react性能提升的知识点**，shouldComponentUpdate 避免子组件不必要的render操作。
 - 约定异步请求放在 componentDidMount 中
 
 通过chrome插件，勾选highlight，设置渲染高亮。
@@ -895,7 +895,7 @@ handleBtnClick () {
 ```js
 shouldComponentUpdate(nextProps, nextState) {
   if (nextProps.content !== this.props.content) {
-    return true
+    return true 
   } else {
     return false
   }
@@ -914,7 +914,7 @@ shouldComponentUpdate 提高子组件性能
 
 异步请求放在 componentDidMount 中
 
-异步请求需要放在只执行一次的生命周期函数中，如 componentWillMount，componentDidMount 中，但componentWillMount 可能会和rn、服务器端的同构等更高端的技术产生冲突。
+异步请求需要放在只执行一次的生命周期函数中，如 componentWillMount，componentDidMount、constructor 中，但componentWillMount 可能会和rn、服务器端的同构等更高端的技术产生冲突。
 
 所以约定，异步请求放在componentDidMount 中
 
@@ -1187,6 +1187,8 @@ export default App;
 本章主要讲解Redux产生背景，组成内容以及使用方式，通过实例带大家上手Redux数据管理框架的使用。
 
 ### 5-1 Redux 概念简述
+
+react只是一个轻量级的视图层框架，需要搭配一个数据层框架。
 
 Redux  是一个数据层框架。
 
