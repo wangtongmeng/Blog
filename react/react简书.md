@@ -1305,11 +1305,31 @@ export default TodoList
 
 ### 5-5 Action 和 Reducer 的编写
 
-安装 chrome 插件，redux-devtools
+安装 chrome 插件，**redux-devtools**
+
+配置 store，打开chrome控制面板，选择redux，如果提示需要配置，点击链接，按照说明进行配置
+
+<https://github.com/zalmoxisus/redux-devtools-extension#usage>
+
+重新打开redux，就可以看到store中的数据了
+
+```js
+import { createStore } from 'redux'
+import reducer from './reducer'
+
+const store = createStore(
+  reducer,
+  window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
+)
+
+export default store
+```
+
+
 
 组件和store通信
 
-创建action,通过 store.dispatch(action)传给 store，store 会自动把当前数据（上一次存储的数据）和 action 转发给 reducer，reducer 通过 action 处理上一次数据（reducer 可以接收 state, 但绝不能修改 state）并返回一个新的数据给 store，store会用新数据替换老数据。通过 store.subscribe() 订阅 store，当 store 发生改变，subscribe 的函数参数会自动执行。我们可以从store中拿到新数据替换组件中老的数据this.setState(store.getState())
+创建action,通过 store.dispatch(action)传给 store，store 会自动把 当前数据（上一次存储的数据）和 action 转发给 reducer，reducer 通过 action 处理上一次数据（reducer 可以接收 state, 但绝不能修改 state）并返回一个新的数据给 store，store会用新数据替换老数据。通过 store.subscribe() 订阅 store，当 store 发生改变，subscribe 的函数参数会自动执行。我们可以从store中拿到新数据替换组件中老的数据this.setState(store.getState())
 
 ### 5-6 使用 Redux 完成 TodoList 删除功能
 
