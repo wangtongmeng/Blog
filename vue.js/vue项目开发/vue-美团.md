@@ -551,14 +551,20 @@ Nuxt是Vue实现SSR最好的方案，我们整个项目都是基于Nuxt框架来
 
 基于 vue2 包含了 vue-router，可以支持 vuex 、Vue Server Render、vue-meta。
 
+英文官网（**版本最新**）：<https://nuxtjs.org/guide>
+
+中文官网：<https://zh.nuxtjs.org/guide/installation>
+
 ### Nust.js 工作流
 
 ![1562204744128](../img/nuxtjs工作流.png)
 
+asyncData是用来渲染vue组件的，fetch通常是用来修改vuex的。
+
 ### Nuxt.js 安装
 
 ```shell
-vue init nuxt-community/koa-template
+vue init nuxt-community/koa-template '项目名'
 ```
 
 使用这个模板，需要把nuxt版本降级到1.4.2
@@ -569,24 +575,180 @@ npm 切换依赖包安装源
 nrm use npm 选择 npm 作为安装源
 nrm ls 查看安装源
 ```
-
+### nuxt基础知识
 - 路由&示例
 - 页面模板&示例
 - 异步数据&示例&SSR剖析
 - Vuex应用&示例
 
-mac下eslint会提示有错误，需要更新 eslint-plugin-html，`npm i eslint-plugin-html@^3`，安装主版本是3的以上版本。
+> eslint 会提示有错误，需要更新 eslint-plugin-html，`npm i eslint-plugin-html@^3`，安装主版本是3的以上版本。
 
-这里没有提示，暂时用主版本是2的版本。
+#### **路由&示例**
 
-Vue SSR 工作原理
+当我们在pages文件夹中创建文件时
 
-- SSR 概述
-  - 用来解决 SEO 的问题
-  - 使结果快速展现
-- SSR 实现原理
-  - 
-- Vue SSR 的渲染流程
+- next配置了对应路由，路由名称与文件名相同。
+- 把文件作为配置的入口文件。 
+
+#### **页面模板&示例**
+
+创建项目后，默认会有两个模板文件
+
+layouts/default.vue
+
+layouts/error.vue
+
+当我们创建路由文件时，没有设置模板文件会默认使用default.vue作为模板文件。而default.vue中引用了一个公共组件 Footer.vue
+
+`<nuxt />` 相当于 `<router-view />` 的作用
+
+`<nuxt-link />` 相当于 `<router-link />` 的作用
+
+创建一个search模板，layouts/search.vue
+
+```vue
+<template>
+  <div class="layout-search">
+    <h1>search layout header</h1>
+    <nuxt />
+    <footer>search layout footer</footer>
+  </div>
+</template>
+<style>
+  .layout-search {
+    color: red;
+  }
+</style>
+```
+
+在路由页面中使用search模板，pages/search.vue
+
+```vue
+<template>
+  <div class="page">
+    Page is search
+  </div>
+</template>
+<script>
+export default {
+  layout: 'search' // 使用 search模板
+}
+</script>
+
+```
+
+#### **配置文件的作用 nuxt.config.js**
+
+- title，浏览器tab页面标题
+- meta，
+- css，配置全局css样式
+
+#### **异步数据&示例&SSR剖析**
+
+在服务端创建一个路由，创建一个city相关的路由文件，server/interface/city.js
+
+```js
+import Router from 'koa-router'
+
+const router = new Router({
+  prefix: '/city'
+})
+
+router.get('/list', async (ctx) => {
+  ctx.body = {
+    list: ['北京', '天津']
+  }
+})
+
+export default router
+```
+
+在主文件中引入路由，server/index.js
+
+```js
+import cityInterface from './interface/city'
+...
+// 固定写法
+app.use(cityInterface.routes()).use(cityInterface.allowedMethods())
+```
+
+windows用git bash通过curl命令进行测试，返回数组则成功。
+
+```js
+curl http://localhost:3000/city/list
+```
+
+在客户端通过ssr的方式获取异步数据
+
+```vue
+<template>
+  <div class="page">
+    Page is search
+    <ul>
+      <li v-for="(item, idx) in list" :key="idx">{{item}}</li>
+    </ul>
+  </div>
+</template>
+<script>
+import axios from 'axios'
+export default {
+  layout: 'search',
+  data() {
+    return {
+      list: []
+    }
+  },
+  // mounted在服务器端不会被执行，只有在浏览器端才会被执行，所以页面查看源码数据不是直接返回
+  // async mounted() {
+  //   let { status, data: { list } } = await axios.get('/city/list')
+  //   if (status === 200) {
+  //     this.list = list
+  //   }
+  // }
+
+  // 服务端 不仅下发了数据和模板编译后的内容 同时还下发了异步获取的数据。数据是通过下发一个script标签，在window上挂载一个对象，对象里会包含data选项。
+  // fetch在这里不行，因为它是用来处理vuex相关的数据的，这里是组件相关，要用 asyncData
+  async asyncData() {
+    let { status, data: { list } } = await axios.get('http://localhost:3000/city/list')
+    if (status === 200) {
+      return {
+        list
+      }
+    }
+  }
+}
+</script>
+
+```
+
+#### Vuex应用&示例
+
+还是遵循**创建即配置**的原则
+
+和用异步数据效果一样，下发的数据都是通过服务端下发一个script标签的方式，然后给window赋值一个属性实现的，达到服务端数据和浏览器端数据同步。
+
+#### nuxtServerInit 的使用
+
+[https://zh.nuxtjs.org/guide/vuex-store/#nuxtserverinit-%E6%96%B9%E6%B3%95](https://zh.nuxtjs.org/guide/vuex-store/#nuxtserverinit-方法)
+
+### Vue SSR 工作原理
+
+#### SSR 概述
+
+- 用来解决 SEO 的问题
+- 使结果快速展现
+
+#### SSR 实现原理
+
+请求->nuxtServerInit（可以不做操作）->middleware(可以不做操作，有内置的中间件操作)->validate（可以不作操作）->**asyncData() & fetch()**
+
+在拿数据阶段，一般是 asyncData 向服务端拿数据再结合模板渲染好页面给到浏览器，包括样式、编译好的模板内容（静态内容）、script标签中的数据部分，交互是在浏览器端完成的，浏览器端也会对数据和模板进行编译，但不会直接渲染页面，因为服务端已经渲染过一次了，这时，浏览器端会创建虚拟的渲染结果和浏览器返回的进行对比（vdom对比），如果有区别，会重新请求数据。所以服务器给到浏览器端的数据就是为了对比用的。
+
+#### Vue SSR 的渲染流程
+
+
+
+
 
 ## 第6章 实战准备
 
@@ -733,7 +895,7 @@ build: {
 
 大多数页面可分为三大板块 header、body、footer，可作为默认模板。而像登录注册明显板式不同的可以单独出来。然后再根据具体内容，根据功能或内容等不同分类，抽象成组件。
 
-![1562227328021](./img/美团-需求分析-模板设计.png)
+![1562227328021](../img/美团-需求分析-模板设计.png)
 
 组件设计
 
@@ -795,9 +957,9 @@ passport 验证权限的类库
 
 **需求分析(数据结构设计)**
 
-![1562723800046](./img/美团-表数据结构设计.png)
+![1562723800046](../img/美团-表数据结构设计.png)
 
-![1562724253966](./img/美团-表数据结构-城市推荐.png)
+![1562724253966](../img/美团-表数据结构-城市推荐.png)
 
 **需求分析(接口设计)**
 
