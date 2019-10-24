@@ -586,7 +586,7 @@ this.$http.all([
  )
 ```
 
-## 京东商城首页（下）
+## 第5章 京东商城首页（下）
 
 ### 秒杀组件开发
 
@@ -657,3 +657,24 @@ import '@js/filters.js'
 1. 默认的展示效果 -> 左边后退按钮的图标、中间页面的名称、右边是空白的内容
 2. 可通过插槽来配置具体的展示样式 -> 左、中、右 三个插槽，父组件可以通过这三个插槽来制定对应位置的布局。
 3. 可以接收从外部指定的一个样式（可以在父组件中指定 navigationBar 的 style）。
+
+## 第6章 商品列表项
+
+### 商品列表页分析
+
+路由懒加载打包结果
+
+```js
+   {
+      path: '/goodsList',
+      name: 'goodsList',
+      // vue-router 懒加载 - > chunkName -> GoodsList.[hash].js
+      // chunkName -> GoodsList.[hash].js
+      component: () => import('./views/GoodsList.vue')
+    },
+```
+
+首页中，商品列表单独滑动的问题，由于瀑布流计算了goods的高度，导致固定高的出现，设置为100%就可以和页面一起滚动了
+
+### 第7章 商品详情与页面状态保存
+
