@@ -678,3 +678,13 @@ import '@js/filters.js'
 
 ### 第7章 商品详情与页面状态保存
 
+```css
+// 单行文本
+.single-row-text {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    display: inline-block;
+}
+```
+
