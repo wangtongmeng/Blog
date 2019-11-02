@@ -688,6 +688,12 @@ import '@js/filters.js'
 }
 ```
 
+视差效果分析
+
+- 让多层背景以不同的速度进行移动而形成的效果
+
+利用 position:relative 根据滑动距离，时时改变距离顶部的距离
+
 ## 第10章 与 native 交互
 
 - WEB 端在 Native 中的展示
