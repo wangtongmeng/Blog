@@ -250,3 +250,208 @@ let a = 10 + null + true + [] + undefined + '啦啦' + null + [] + 10 + false
 console.log(a) '11undefined啦啦null10false'
 ```
 
+**布尔数据类型**
+
+只有两个值 true/false
+
+**转布尔**
+
+只有 0、NaN、''、null、undefined 五个值转换成false，其余都转换为true。
+
+- Boolean([val])
+- !/!!
+- 条件判断
+
+```js
+Boolean(0) // false
+Boolean('') // false
+Boolean(' ') // true
+Boolean(null) // false
+Boolean(undefined) // false
+Boolean([]) // true
+Boolean([1, 2]) // true
+Boolean(-1) // true
+
+// !:取反（先转为布尔，然后取反）
+// !!：取反再取反，相当于转换为布尔 <=> Boolean
+!1 // false
+!!1 // true
+
+// 如果条件只是一个值，不是 ==/===/!=/>= 等这些比较，是要把这个值先转换为布尔类型，然后验证真假
+if(1) {} // true
+if('3px' + 3){} // true,'3px3'=> true
+ if('3px' - 3){} // false，NaN - 3 => NaN => false
+```
+
+**null / undefined**
+
+null和undefined都代表是没有
+
+null：意料之中（一般都是开始不知道值，我们手动先设置为null，后期再给赋予值操作）
+
+```js
+let num = null // let num = 0 一般最好用null作为初始空值，因为零不是空值，它在栈内存中有自己的存储空间（占了位置）
+num = 12
+```
+
+undefined：意料之外（不是我能决定的）
+
+```js
+let num; // 创建一个变量没有赋值，默认值是undefined
+num = 12;
+```
+
+**object对象数据类型-普通对象**
+
+> {[key]:[value],...} 任何一个对象都是由零到多组键值对（属性名：属性值）组成的（且属性名不能重复）
+
+  ```js
+let person = {
+  name: 'xxx',
+  age: 10,
+  height: '185CM',
+  weight: '80KG',
+  1: 100
+}
+// 获取属性名对应的属性值
+// =>对象.属性名
+// =>对象[属性名] 属性名是数字或字符串格式的
+// =>如果当前属性名不存在，默认的属性值是undefined
+// =>如果属性名是数字，则不能使用点的方式获取属性值
+person.name
+person['age']
+person.sex //=>undefined
+person[1]
+person.1 //=>SyntaxError:语法错误
+// 设置属性名属性值
+// =>属性名不能重复，如果属性名已经存在，不属于新增属于修改属性值
+person.GF = 'yyy'
+person['GF'] // 'yyy'
+person.name = 'zzz'
+// 删除属性
+// =>真删除：把属性彻底干掉
+delete person[1]
+// =>假删除：属性还在，值为空
+person.weight = null
+console.log(person)
+
+
+  ```
+
+> 数组是特殊的对象数据类型
+
+```js
+/*
+	数组是特殊的对象
+	1. 我们中括号中设置的属性值，它的属性名是默认生成的数字，从零开始递增，而且这个数字代表每一项的位置，我们把其称为“索引”=>从零开始，连续递增，代表每一项位置的数字属性名
+	2. 天生默认一个属性名 lenfth，存储数组的长度
+*/
+let ary = [12, '哈哈', true, 13]
+console.log(ary)
+ary.length
+ary['length']
+ary[1]
+// 第一项索引0 最后一项索引 ary.length -1
+ary[0]
+ary[ary.length - 1]
+// 向数组末尾追加内容
+ary[ary.length] = 100
+```
+
+**JS中数据类型检测**
+
+> 有且只有4中方法
+
+- typeof [val]：：用来检测数据类型的运算符
+- instanceof：用来检测当前实例是否隶属于某个类
+- constructor：基于构造函数检测数据类型（也是基于类的方式）
+- Object.prototype.toString.call()：检测数据类型最好的方法
+
+```js
+/*
+	基于typeof检测出来的结果
+	1. 首先是一个字符串
+	2. 字符串中包含对应的类型
+	局限性
+	1. typeof null => "object" 但是null并不是对象
+	2. 基于typeof无法细分出当前值是普通对象还是数组对象等，因为只要是对象数据类型，返回的结果都是"object"
+*/
+typeof 1 // 'number'
+typeof NaN // =>'number'
+typeof '12' // 'string'
+typeof true // 'boolean'
+typeof null // "object"
+typeof undefined // "undefined"
+typeof {} // "object"
+typeof [] // "object"
+typeof /^/ // "object"
+typeof function(){} // "function"
+// 面试题
+console.log(typeof typeof typeof []) // 从右到左计算，"string"，因为typeof检测的结果都是字符串，所以只要两个及以上同时检测，最后结果必然是"string"
+```
+
+## 堆栈内存（stack & heap）
+
+- 浏览器渲染JS的机制
+- 数据类型之间的区别
+- 经典面试题联系
+- 数据类型的检测
+
+```js
+let a = 12
+let b = a
+b  = 13
+console.log(a) // 12
+
+let n = {
+  name: 'xxx'
+}
+let m = n
+m.name= 'yyy'
+console.log(n.name) // 'yyy'
+```
+
+浏览器想要执行JS代码：
+
+1.从电脑内存中分配出一块内存，用来执行代码（栈内存=>Stack）
+
+2.分配一个主线程用来自上而下执行JS代码
+
+栈内存：包含变量存储空间、值存储空间、主线程
+
+![1573439415468](./img/浏览器运行机制-堆栈内存.png)
+
+```js
+let n = [10, 20]
+let m = n 
+let x = m
+m[0] = 100
+x = [30, 40]
+x[0] = 200
+m = x
+m[1] = 300
+n[2] = 400
+// 画图
+console.log(n, m, x) // n=>[100,20,400] m=x=>[200,300]
+```
+
+![1573441034355](./img/浏览器运行机制-堆栈内存-练习1.png)
+
+写出下面结果输出的答案（阿里面试题）
+
+```js
+let a = {
+  n: 1
+}
+let b = a
+a.x = a = {
+  n: 2
+}
+console.log(a.x)
+console.log(b)
+```
+
+![1573442065044](./img/浏览器运行机制-堆栈内存-练习2.png)
+
+ ## JS中的操作语句：判断、循环
+
