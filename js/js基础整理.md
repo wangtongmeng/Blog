@@ -455,3 +455,226 @@ console.log(b)
 
  ## JS中的操作语句：判断、循环
 
+**判断**
+
+> 条件成立做什么？不成立做什么？
+
+- if/else if/else
+- 三元运算符
+- switch case
+
+1. if/else
+
+```js
+if(条件){
+	条件成立执行
+} else if(条件2){
+  条件2成立执行
+}
+...
+else{
+以上条件都不成立
+}
+```
+
+2. 三元运算符：简短if/else的特殊处理方式
+
+> 条件?条件成立处理的事情：不成立处理的事情
+>
+> 1.如果处理的事情比较多，我们用括号包起来，每一件事情都用逗号分隔
+>
+> 2.如果不需要处理事情，可以使用null/undefined占位
+
+```js
+let a = 10
+// 三元
+a > = 10 ? console.log('呵呵') : console.log('哈哈')
+// 正常
+if (a >= 10) {
+  console.log('呵呵')
+} else {
+  console.log('哈哈')
+}
+
+// 注意事项
+let a = 10
+// 正常
+if (a > 0 && a < 20) {
+  a++; // =>a+=1 a=a+1 =>自身累加1
+  console.log(a)
+}
+// 三元
+a > 0 && a < 20 ? (a++, console.log(a)) : null
+
+// 练习(正常不会这么写)
+let a = 10
+// 正常
+if (a > 0) {
+  if (a < 10) {
+    a++
+  } else {
+    a--
+  }
+} else {
+  if (a > -10) {
+    a += 2
+  }
+}
+// 三元
+a > 0 ? (a < 10 ? a++ : a--) : (a > -10 ? a += 2 : null)
+
+```
+
+3. switch case
+
+> 一个变量在不同值情况下的不同操作
+>
+> 1.每一种case情况结束后最好都加上break
+>
+> 2.default等价于else，以上都不成立干的事情
+>
+> 3.每一种case情况的比较用的都是==="绝对相等"
+
+```js
+let a = 10
+if (a == 1) {
+  console.log('呵呵')
+} else if (a == 5) {
+  console.log('呵呵1')
+} else if (a == 10) {
+  console.log('呵呵1')
+} else {
+  console.log('呵呵2')
+}
+
+switch (a) {
+  case 1:
+    console.log('呵呵')
+    break;
+  case 5:
+    console.log('呵呵1')
+    break;
+  case 10:
+    console.log('呵呵2')
+    break;
+  default:
+    console.log('呵呵3')
+} 
+
+// 不加break，当前条件成立执行完成后，后面条件不论是否成立都要执行，知道遇到break为止（不加break可以实现变量在某些值的情况下做相同的事情）
+let a = 1 
+switch (a) {
+  case 1:
+    a++;
+  case 5:
+    a += 2
+    break;
+  default:
+    a--;
+}
+console.log(a) // 4
+// 当变量在某几个情况时，可以这么写
+let a = 1 
+switch (a) {
+  case 1:
+  case 5:
+    a += 2
+    break;
+  default:
+    a--;
+}
+console.log(a)
+
+
+let a = '5'
+switch (a) {
+  case 1:
+    console.log('呵呵')
+    break;
+  case 5:// => 此处 '5' case 5 => false
+    console.log('哈哈')
+    break;
+  default:
+    console.log('嘻嘻') // 最终结果
+}
+a = '5'
+if (a == 1) {
+  console.log('呵呵') //=>'5' == 5 =>true
+} else if (a == 5) {
+  console.log('昂昂') //  最终结果
+} else {
+  console.log('嘻嘻')
+}
+```
+
+**== VS ===**
+
+==：相等（如果左右两边数据值类型不同，是默认先转换为相同的类型，然后比较）
+
+'5'==5 =>true
+
+===：绝对相等（如果类型不一样，肯定不相等，不会默认转换数据类型）
+
+'5'===5 => false
+
+项目中为了保证业务的严禁，推荐使用 ===
+
+**循环**
+
+> 重复做某些事情就是循环
+
+- for循环
+- for in循环
+- for of循环（ES6新增）
+- while
+- do while
+
+for循环
+
+```js
+/*
+	1.创建循环初始值
+	2.设置（验证）循环执行的条件
+	3.条件成立执行循环体中的内容
+	4.当前循环结束执行步长累计操作
+*/
+for(var i=0;i<5;i++){
+  console.log(i) // 0 1 2 3 4
+}
+console.log(i) // 5
+
+
+for (var i=10;i>4;i-=2){
+  if (i < 7) {
+    i++
+  } else {
+    i--
+  }
+}
+console.log(i) // 4
+
+// 循环体中的两个关键词
+// continue：结束当前这轮循环（continue后面的代码不再执行），继续执行下一轮循环
+// break：强制结束整个循环（break后面代码也不再执行），而且整个循环啥也不干直接结束
+
+// 以下输出几次？分别是多少？
+if(var i = 0;i < 10; i++) {
+  if (i >= 2) {
+    i += 2
+    continue
+  }
+  if (i >= 6) {
+    i--
+    break
+  }
+  i++
+  console.log(i) // 第一次 1
+}
+console.log(i) // 第二次 11
+```
+
+
+
+## css
+
+css一定要先写公共样式
