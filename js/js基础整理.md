@@ -747,7 +747,36 @@ sum(10, 20) // 150
 sum(10, 20, 30) // 150
 ```
 
+**函数中的返回值**
 
+```js
+// 函数执行时，函数体内部创建的变量我们时无法获取和操作的，如果想要获取内部的信息，我们需要看基于return返回值机制，把信息返回才可以
+function sum(n, m) {
+  let result = n + m
+  // return的一定是值：此处是把result变量存储的值返回给外面
+  return result //=> reutrn 30
+}
+sum(10, 20)
+console.log(result) // =>Uncaught ReferenceError: result is not defined
+
+// 没有写 return，函数默认返回值是undefined
+function sum(n, m) {
+  let result = n + m
+}
+let AA = sum(10, 20)
+console.log(AA) //=>undefined
+// 实际工作中使用 return 的一种场景
+function sum(n, m) {
+  if (n === undefined || m === undefined) {
+    // 函数体中遇到 return，后面代码则不再执行了
+    return
+  }
+  let result = n + m
+}
+sum(10, 20)
+```
+
+> 函数中的返回值的四个要点
 
 ## css
 
