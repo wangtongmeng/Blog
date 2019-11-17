@@ -792,7 +792,77 @@ setTimeout(function(){}, 1000) //=>设置定时器，1000ms后执行匿名函数
 })(100)
 ```
 
+## 阶段总结
 
+### 问答题
+
+1. JS中常用的数据类型有哪些？
+2. 浏览器中常用的内核有哪些？
+3. 数据类型之间的区别？
+4. 列举常用的关键字和保留字
+5. JS中创建变量的几种常用方式？
+
+2.常用的浏览器内核：webkit、gecko、presto、trident
+
+3.基本数据类型按值操作，引用类型操作的是堆内存的空间地址
+
+4.常用的关键字和保留字
+
+- 关键字
+
+  - break
+  - continue
+  - if
+  - else
+  - for
+  - var / let /const / function / class
+  - instanceof
+  - typeof
+  - this
+  - return
+  - switch
+  - case
+  - do
+  - while
+  - delete
+  - new
+  - ...
+
+- 保留字
+
+  - boolean
+  - float
+  - int
+  - double
+  - long
+  - char
+  - debugger
+  - ...
+
+  5.var/let创建变量，const创建常量，function创建函数，class创建类，import模块导入
+
+### 练习题
+
+1. 写出下面结果输出的答案（阿里面试题）
+
+```js
+let a = {
+  n:1
+};
+let b = a
+a.x = a = {
+  n: 2
+};
+console.log(a.x);
+console.log(b);
+```
+
+
+
+### 扩展题
+
+1. 浏览器常用的输出方式，除了console.log还有哪些？
+2. `<script>`标签放到页面头部和尾部的区别，以及解决办法？
 
 ## css
 
