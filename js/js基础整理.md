@@ -750,16 +750,16 @@ sum(10, 20, 30) // 150
 **函数中的返回值**
 
 ```js
-// 函数执行时，函数体内部创建的变量我们时无法获取和操作的，如果想要获取内部的信息，我们需要看基于return返回值机制，把信息返回才可以
+// 1.函数执行时，函数体内部创建的变量我们时无法获取和操作的，如果想要获取内部的信息，我们需要看基于return返回值机制，把信息返回才可以
 function sum(n, m) {
   let result = n + m
-  // return的一定是值：此处是把result变量存储的值返回给外面
+  // 2.return的一定是值：此处是把result变量存储的值返回给外面
   return result //=> reutrn 30
 }
 sum(10, 20)
 console.log(result) // =>Uncaught ReferenceError: result is not defined
 
-// 没有写 return，函数默认返回值是undefined
+// 3.没有写 return，函数默认返回值是undefined
 function sum(n, m) {
   let result = n + m
 }
@@ -768,7 +768,7 @@ console.log(AA) //=>undefined
 // 实际工作中使用 return 的一种场景
 function sum(n, m) {
   if (n === undefined || m === undefined) {
-    // 函数体中遇到 return，后面代码则不再执行了
+    // 4.函数体中遇到 return，后面代码则不再执行了
     return
   }
   let result = n + m
@@ -777,6 +777,22 @@ sum(10, 20)
 ```
 
 > 函数中的返回值的四个要点
+
+**匿名函数**
+
+匿名函数之函数表达式：把一个匿名函数本身作为值赋值给其他东西，这种函数一般不是手动触发执行，而且靠其它程序驱动触发执行（例如：触发某个时间时把它执行等）
+
+```js
+document.body.onclick = function () {}
+setTimeout(function(){}, 1000) //=>设置定时器，1000ms后执行匿名函数
+
+// 匿名函数之自执行函数：创建完一个匿名函数，紧接着把当前函数加小括号执行
+(function(n){
+  // n=>100
+})(100)
+```
+
+
 
 ## css
 
