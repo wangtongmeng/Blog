@@ -444,7 +444,7 @@ let a = {
   n: 1
 }
 let b = a
-a.x = a = {
+a.x = a = { // 让a.x和a分别和值关联，a.x=是第一步
   n: 2
 }
 console.log(a.x)
@@ -857,7 +857,34 @@ console.log(a.x);
 console.log(b);
 ```
 
+2.分别写出下列表达式输出的结果（腾讯面试题）
 
+```js
+var a = 'abc' + 123 + 456
+var b = '456' - '123'
+var c = 100 + true + 21.2 + null + undefined + "Tencent" + [] + null + 9 + false
+console.log(a,b,c)
+```
+
+知识点：JS中的加减乘除本应是进行数学运算（如果遇到的值不是数字类型，也需要基于Number()方法把其转换为数字，再进行运算）；但是JS中加法有特殊情况：相加过程中遇到字符串直接变为字符串拼接
+
+3.写出下列代码的输出结果（腾讯面试题）
+
+```js
+var str = 'abc123'
+var num = parseInt(str)
+if (num == NaN) {
+  alert(NaN)
+} else if (num == 123) {
+  alert(123)
+} else if (typeof num == 'number') {
+  alert('number') // 答案
+} else {
+  alert('srt')
+}
+```
+
+涉及知识点：NaN、==、typeof
 
 ### 扩展题
 
