@@ -886,6 +886,59 @@ if (num == NaN) {
 
 涉及知识点：NaN、==、typeof
 
+4.写出下列代码的输出结果（腾讯面试题）
+
+```js
+var a = 0
+var b = a
+b++
+alert(a)
+var o = {}
+o.a = 0
+var b = o
+b.a = 10
+alert(o.a)
+```
+
+5.能输出“1”的有哪些？
+
+```js
+A.alert(1)
+B.console.log(parseInt(1.3))
+C.console.log(1)
+D.console.log(isNaN(1))
+E.console.log(parseInt("1"))
+```
+
+6.下面结果是“undefined”的是
+
+```js
+A.console.log(alert(1))
+B.typeof undefined
+C.console.log(parseInt(undefined))
+D.isNaN(undefined)
+```
+
+>  console.log(alert(1))
+>
+> 1. alert(1)：执行浏览器内置的alert方法，执行方法的时候弹出一个“1”（方法的功能），此方法没有返回值（默认返回值undefined）
+>
+> 2. console.log(undefined)
+
+
+
+> 1. Number()它是按照浏览器从底层机制，把其他数据类型转换为数字
+>
+> - 字符串：看是否包含非有效数字字符，包含结果就是NaN；''->0
+> - 布尔：true ->1 false->0
+> - null：->0
+> - undefined：->NaN
+> - 引用类型值都要先先换为字符串再转换为数字
+>   - {}/正则/函数等 ->NaN
+>   - [] ->''->0
+>   - ['12']->'12'->12
+>   - [12, 23]->'12,23'->NaNd
+
 ### 扩展题
 
 1. 浏览器常用的输出方式，除了console.log还有哪些？
