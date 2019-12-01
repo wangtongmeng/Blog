@@ -120,7 +120,7 @@ webstorm
 
 > 最重要的两个快捷键 shift + shift 任意搜索 / 点击设置
 
-操作git，搜索 vcs(version control system)
+操作git，搜索 vcs(version control system)，快捷键`alt+tab键上面的键`
 
 添加 .gitignore 文件，忽略 node_modules 和 idea文件夹
 
@@ -137,6 +137,10 @@ emmet设置及使用
 
 - 设置=>搜索 emmet =>选择 css，勾选 `Enable fuzzy search ...`
 - 使用，如 ali:c=>align-items:center
+
+将css颜色作为背景色，setting=>搜Appearance=>勾选Show CSS color preview as background
+
+重构代码，比如重构命名，右键refactor，快捷键shift+F6
 
 ## button组件
 
@@ -188,12 +192,22 @@ html { /*:root*/
   - 修改字体大小及位置，字体大小保持一致，位置居中对称
   - 对称图像生成，可以使用sketch、ps、在线svg编辑器生成对称图形，再上传到iconfont
 - 批量去色
+
   - 批量操作=>全选=>批量去色
 - 生成 Symbol
+
   - 点击Symbol=>生成在线链接
 - 在项目中使用
-  - 
+
+  
+
+### 单元测试与Mock
+
+安装 chai `npm i -D chai`
+
+安装 chai-spies `npm i -D chai-spies`
 
 ## 工具知识
 
 xxx.log => console.log(xxx)
+
